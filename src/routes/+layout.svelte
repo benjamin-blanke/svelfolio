@@ -9,16 +9,3 @@
 <Navbar />
 
 </main>
-
-<video
-src="/leaves.mp4"
-autoplay
-loop
-muted
-playsinline
-preload="auto"
-aria-hidden="true"
-draggable="false"
-class="pointer-events-none fixed inset-0 z-999 hidden h-full w-full object-cover object-top mix-blend-multiply grayscale select-none motion-reduce:hidden lg:block"
-
-</video>
