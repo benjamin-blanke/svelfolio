@@ -21,7 +21,7 @@
 </script>
 
 <Metadata
-	title="Projects | Wiscaksono"
+	title="Projects | Benjamin"
 	description="Discover the interactive brilliance of my projects, peruse my polished portfolio, and delve into a sneak peek of my formidable technical prowess. Uncover a world where innovation meets functionality, showcased through a meticulously crafted Next.js application. Elevate your digital experience with a seamless blend of creativity and technical finesse."
 />
 
