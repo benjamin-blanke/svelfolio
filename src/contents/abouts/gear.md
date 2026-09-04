@@ -1,3 +1,8 @@
+---
+title: 'gear.ts'
+description: 'A homelab-heavy hardware and software setup — more Proxmox than gaming rig.'
+---
+```ts
 const hardware = {
 	computers: [
 		{
@@ -60,7 +65,7 @@ const software = [
 	},
 	{
 		name: 'Oh My Zsh',
-		desc: 'My shell of choice, spiced up with Powerlevel10k — because even `pnpm install` should look good.',
+		desc: 'My shell of choice, spiced up with Powerlevel10k — because even pnpm install should look good.',
 		tags: ['Terminal']
 	},
 	{
@@ -78,7 +83,7 @@ const software = [
 const hosting = [
 	{
 		name: 'Vercel',
-		desc: "Deploys so fast, it's practically magic. Git push, and voilà — the site is live.",
+		desc: 'Deploys so fast, it is practically magic. Git push, and voila — the site is live.',
 		tags: ['Hosting']
 	},
 	{
@@ -88,7 +93,7 @@ const hosting = [
 	},
 	{
 		name: 'Proxmox VE',
-		desc: 'Where every VM and LXC lives — Jellyfin, Kali, Minecraft servers, and whatever container I\'m currently breaking.',
+		desc: 'Where every VM and LXC lives — Jellyfin, Kali, Minecraft servers, and whatever container I am currently breaking.',
 		tags: ['Virtualization']
 	},
 	{
@@ -107,3 +112,4 @@ const hosting = [
 		tags: ['VPS']
 	}
 ];
+```
