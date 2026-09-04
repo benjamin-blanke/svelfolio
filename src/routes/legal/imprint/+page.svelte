@@ -13,10 +13,8 @@
 <h2>Kontakt</h2>
 
 <p>
-	E-Mail:
-	<a href="mailto:hello@opus-host.de">hello@opus-host.de</a><br />
-	Telefon:
-	<a href="tel:+4915168444474">015168444474</a>
+	E-Mail: <a href="mailto:hello@opus-host.de">hello@opus-host.de</a><br />
+	Telefon: <a href="tel:+4915168444474">015168444474</a>
 </p>
 
 <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
@@ -52,8 +50,7 @@
 	Heiligenstraße 15<br />
 	77933 Lahr<br />
 	Deutschland<br />
-	E-Mail:
-	<a href="mailto:hello@opus-host.de">hello@opus-host.de</a>
+	E-Mail: <a href="mailto:hello@opus-host.de">hello@opus-host.de</a>
 </p>
 
 <p>
@@ -61,7 +58,7 @@
 	von personenbezogenen Daten wie Namen, Kontaktdaten oder IP-Adressen.
 </p>
 
-<h2>2. Bereitstellung der Website und Server-Log-Dateien</h2>
+<h2>2. Bereitstellung der Website und Erstellung von Server-Log-Dateien</h2>
 
 <h3>Art und Umfang der Datenverarbeitung</h3>
 
@@ -224,4 +221,4 @@
 	unbefugten Dritten abgefangen oder mitgelesen werden.
 </p>
 
-</div> <style> :global(html), :global(body) { overflow-y: auto !important; height: auto !important; } :global(body) { overflow-x: hidden !important; } .imprint { width: 100%; max-width: 800px; margin: 0 auto; padding: 40px 20px 100px; font-family: 'Commit Mono', monospace; line-height: 1.6; } .back { display: inline-block; margin-bottom: 40px; color: inherit; text-decoration: none; } h1 { margin: 50px 0 30px; font-size: 32px; } h2 { margin: 40px 0 15px; font-size: 20px; } h3 { margin: 25px 0 10px; font-size: 16px; } p { margin: 0 0 20px; } ul { margin-bottom: 25px; padding-left: 25px; } li { margin-bottom: 15px; } a { color: inherit; } @media (max-width: 600px) { .imprint { padding: 25px 15px 80px; } h1 { font-size: 28px; } } </style>
+</div> <style> .imprint { padding: 2rem; padding-bottom: 5rem; } .imprint p, .imprint ul { max-width: 800px; } .imprint li { margin-bottom: 1rem; } .imprint h1 { margin-top: 3rem; } .imprint h2 { margin-top: 2rem; } .imprint h3 { margin-top: 1.5rem; } :global(html), :global(body) { overflow-y: auto !important; height: auto !important; } :global(body) { overflow-x: hidden; } </style>
