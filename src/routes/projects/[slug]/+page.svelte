@@ -7,7 +7,7 @@
 </script>
 
 <Metadata
-	title={data.meta.title + ' | Wiscaksono'}
+	title={data.meta.title + ' | Benjamin'}
 	description={data.meta.description}
 	image={typeof data.meta.poster === 'string' ? data.meta.poster : data.meta.poster.img.src}
 />
