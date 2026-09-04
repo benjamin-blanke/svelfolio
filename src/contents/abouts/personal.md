@@ -1,18 +1,24 @@
----
-title: personal.ts
-description: Hello, I'm Benjamin Blanke, based in Badem-Würtemberg, Germany. I enjoy programming, gaming, eating, and sleeping :). Explore my world of interests!.
----
-
-```ts
 const NAME = 'Benjamin Blanke';
-
-let location = 'Badem-Würtemberg, Germany';
-
+let location = 'Baden-Württemberg, Germany';
+let currentlyDoing = 'Probably breaking a Proxmox VM at 2am and calling it "testing"';
 let hobbies = [
-	'Programming',
+	'Self-Hosting Literally Everything',
+	'Homelabbing on Proxmox',
+	'Discord Bot Development',
+	'Running a Minecraft Empire (Opus Host)',
 	'Gaming',
 	'Eating',
-	'Sleeping'
+	'Sleeping (allegedly)'
 	// 'Friends'
 ];
-```
+let stack = [
+	'discord.js',
+	'discord.py',
+	'Docker',
+	'Nginx Proxy Manager',
+	'Cloudflare',
+	'Tailscale',
+	'Proxmox VE'
+];
+let currentObsession = 'Squeezing one more service onto a Proxmox node that has no business running it';
+let funFact = 'Founded Opus Host after my previous project got taken down by a security incident — turns out that\'s a great way to learn about server hardening the hard way.';
