@@ -1,34 +1,30 @@
----
-title: 'work.ts'
-description: "I'm Benjamin, a Full-Stack Developer currently working at Nothing :(. Based in Germany, I specialize in building engaging user interfaces using React, Next.js, and TypeScript. With a strong foundation in frontend technologies and a passion for clean, efficient code, I combine Tailwind CSS with modern JavaScript frameworks to create exceptional web experiences. When I'm not crafting responsive websites, you can find me exploring Linux (Arch btw), playing video games, or enjoying a good movie!"
----
-
-```ts
-const PROFESSION = 'Full-Stack Developer';
-const LOCATION = 'Germany';
-
+const PROFESSION = 'Self-Hosting Enthusiast & Discord Bot Developer';
+const LOCATION = 'Lahr/Schwarzwald, Germany';
 // Employers
 const employers = [
-	{ name: 'Opus Host', role: 'Founder', type: 'Full-time' },
-	{ name: 'Cosmo Bot', role: 'Frontend Developer', type: 'Part-time' },
-	{ name: 'Soon', role: 'Frontend Developer', type: 'Freelance' },
-	{ name: 'Soon', role: 'Frontend Developer', type: 'Previous' }
+	{ name: 'Opus Host', role: 'Founder', type: 'Full-time (unpaid, but the uptime is immaculate)' },
+	{ name: 'TBG', role: 'Contributor', type: 'Part-time' },
+	{ name: 'Pfadfinder Lahr', role: 'Member', type: 'Volunteer' },
+	{ name: 'A previous startup that died in a security incident', role: 'Founder', type: 'RIP' }
 ];
-
 // Top Skills
 const skills = {
-	languages: ['TypeScript', 'Go', 'Java'],
+	languages: ['TypeScript', 'JavaScript'],
 	frameworks: [
-		'React',
-		'Next.js',
-		'Tailwind CSS',
+		'discord.js',
+		'discord.py',
 		'Node.js',
-		'Laravel' // still learning this...
+		'Next.js' // for the occasional dashboard
 	],
-	databases: ['PostgreSQL', 'MongoDB'],
-	tools: ['Figma', 'Version Control', 'GraphQL', 'Rest API', 'TRPC']
+	infra: [
+		'Proxmox VE',
+		'Docker',
+		'Nginx Proxy Manager',
+		'Tailscale',
+		'Cloudflare'
+	],
+	databases: ['PostgreSQL (Neon)', 'SQLite'],
+	tools: ['Crafty Controller', 'Authentik', 'n8n', 'Portainer', 'Gitea']
 };
-
 // Fun Facts
-const interests = ['Programming', 'Memes', 'Video Games', 'Music', 'Movies'];
-```
+const interests = ['Self-Hosting Everything I Can', 'Discord Communities', 'Homelabbing', 'Minecraft Servers', 'Video Games', 'Memes'];
