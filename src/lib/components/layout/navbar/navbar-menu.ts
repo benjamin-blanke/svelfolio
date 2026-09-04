@@ -1,35 +1,35 @@
 import type { Pathname } from '$app/types';
 
 interface Menu {
-	title: string;
-	href: Pathname;
-	key: string;
+title: string;
+href: Pathname;
+key: string;
 }
 
 export const navbarMenu: Menu[] = [
-	{
-		title: 'home',
-		href: '/',
-		key: 'h'
-	},
-	{
-		title: 'abouts',
-		href: '/abouts',
-		key: 'a'
-	},
-	{
-		title: 'projects',
-		href: '/projects',
-		key: 'p'
-	},
-	{
-		title: 'friends',
-		href: '/friends',
-		key: 'f'
-	},
-	{
-		title: 'guest-book',
-		href: '/guest-book',
-		key: 'g'
-	}
+{
+title: 'home',
+href: '/',
+key: 'h'
+},
+{
+title: 'abouts',
+href: '/abouts',
+key: 'a'
+},
+{
+title: 'projects',
+href: '/projects',
+key: 'p'
+},
+{
+title: 'guest-book',
+href: '/guest-book',
+key: 'g'
+},
+{
+title: 'imprint',
+href: '/legal/imprint',
+key: 'i'
+}
 ];
