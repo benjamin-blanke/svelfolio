@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { createWebHaptics } from 'web-haptics/svelte';
 
 	import Metadata from '$lib/components/metadata.svelte';
@@ -7,7 +7,31 @@
 	const { trigger, destroy } = createWebHaptics();
 	onDestroy(destroy);
 
+	onMount(() => {
+		const BASE_URL = 'https://support.opus-host.de';
+		const WEBSITE_TOKEN = 'a1FYtGF2EudL92oFAe7FjPDP';
+
+		const script = document.createElement('script');
+		script.src = `${BASE_URL}/packs/js/sdk.js`;
+		script.async = true;
+
+		script.onload = () => {
+			// @ts-ignore
+			window.chatwootSDK.run({
+				websiteToken: WEBSITE_TOKEN,
+				baseUrl: BASE_URL
+			});
+		};
+
+		document.head.appendChild(script);
+
+		return () => {
+			script.remove();
+		};
+	});
+
 	const TEXT = 'BENJAMIN';
+
 	const FONT_MAP = {
 		Slant: () => import('figlet/importable-fonts/Slant.js').then((m) => m.default),
 		Ogre: () => import('figlet/importable-fonts/Ogre.js').then((m) => m.default),
