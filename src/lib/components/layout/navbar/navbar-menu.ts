@@ -23,6 +23,11 @@ export const navbarMenu: Menu[] = [
 		key: 'p'
 	},
 	{
+		title: 'friends',
+		href: '/friends',
+		key: 'f'
+	},
+	{
 		title: 'guest-book',
 		href: '/guest-book',
 		key: 'g'
