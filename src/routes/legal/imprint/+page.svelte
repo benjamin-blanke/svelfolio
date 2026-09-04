@@ -1,10 +1,3 @@
-<script lang="ts"> const title = 'Impressum & Datenschutzerklärung — Benjamin Blanke'; </script>
-
-svelte:head
-<title>{title}</title>
-<meta name="description" content="Impressum und Datenschutzerklärung von Benjamin Blanke." />
-</svelte:head>
-
 <div class="page"> <header> <a class="back" href="/">← back</a> <h1>imprint</h1> </header>
 <main>
 	<section>
