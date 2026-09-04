@@ -169,7 +169,10 @@
 	description="Benjamin Blanke — Student and founder of Opus Host, building self-hosted infrastructure, Discord bots, and community tools around Proxmox, Minecraft server hosting, and homelab systems."
 />
 
-<section bind:this={sectionEl} class="@container flex grow flex-col items-center justify-center space-y-2.5 overflow-hidden px-2 md:space-y-5">
+<section
+	bind:this={sectionEl}
+	class="@container flex grow flex-col items-center justify-center space-y-2.5 overflow-hidden px-2 md:space-y-5"
+>
 	{#key art}
 		<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
 		<code
@@ -198,5 +201,55 @@
 
 	<div class="text-center">
 		<p>Lahr, Germany. Building self-hosted infrastructure & Discord tools at Opus Host.</p>
+	</div>
+
+	<!-- Social / contact links -->
+	<div class="mt-1 flex items-center justify-center gap-4 text-neutral-400">
+		<a
+			href="https://cal.com/benjaminoliverblanke"
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="Book a call"
+			title="Book a call"
+			class="transition-colors hover:text-white"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="17"
+				height="17"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.8"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<rect x="3" y="4" width="18" height="18" rx="2" />
+				<line x1="16" y1="2" x2="16" y2="6" />
+				<line x1="8" y1="2" x2="8" y2="6" />
+				<line x1="3" y1="10" x2="21" y2="10" />
+			</svg>
+		</a>
+
+		<a
+			href="https://discord.com/opushost"
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="Discord"
+			title="Discord"
+			class="transition-colors hover:text-white"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="currentColor"
+			>
+				<path
+					d="M19.54 5.42A16.9 16.9 0 0 0 15.9 4.3l-.46.94a15.6 15.6 0 0 0-6.88 0L8.1 4.3a16.9 16.9 0 0 0-3.64 1.12C2.16 8.74 1.54 12 1.85 15.2a16.9 16.9 0 0 0 4.46 2.25l1.08-1.47c-.59-.22-1.16-.5-1.7-.82l.42-.32c3.28 1.53 7.23 1.53 10.47 0l.42.32c-.54.32-1.11.6-1.7.82l1.08 1.47a16.9 16.9 0 0 0 4.46-2.25c.36-3.72-.62-6.95-1.9-9.78ZM8.9 14.25c-1 0-1.82-.92-1.82-2.05s.8-2.06 1.82-2.06 1.83.93 1.82 2.06c0 1.13-.8 2.05-1.82 2.05Zm6.2 0c-1 0-1.82-.92-1.82-2.05s.8-2.06 1.82-2.06 1.83.93 1.82 2.06c0 1.13-.8 2.05-1.82 2.05Z"
+				/>
+			</svg>
+		</a>
 	</div>
 </section>
