@@ -231,7 +231,7 @@
 
 		<!-- Discord -->
 		<a
-			href="https://discord.com/opushost"
+			href="https://discord.gg/opushost"
 			target="_blank"
 			rel="noopener noreferrer"
 			aria-label="Discord"
