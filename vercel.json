@@ -1,0 +1,10 @@
+{
+	"installCommand": "corepack pnpm install",
+	"buildCommand": "corepack pnpm run build",
+	"headers": [
+		{
+			"source": "/leaves.mp4",
+			"headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+		}
+	]
+}
