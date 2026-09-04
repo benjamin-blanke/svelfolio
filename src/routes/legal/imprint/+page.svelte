@@ -1,5 +1,7 @@
+<script lang="ts"> const title = 'Impressum & Datenschutzerklärung — Benjamin Blanke'; </script>
+
 svelte:head
-<title>Impressum & Datenschutzerklärung — Benjamin Blanke</title>
+<title>{title}</title>
 <meta name="description" content="Impressum und Datenschutzerklärung von Benjamin Blanke." />
 </svelte:head>
 
@@ -89,7 +91,10 @@ svelte:head
 			<li>IP-Adresse des anfragenden Geräts</li>
 		</ul>
 
-		<p>Eine Zusammenführung dieser Daten mit anderen Datenquellen findet nicht statt.</p>
+		<p>
+			Eine Zusammenführung dieser Daten mit anderen Datenquellen findet nicht
+			statt.
+		</p>
 
 		<h3>Rechtsgrundlage</h3>
 
