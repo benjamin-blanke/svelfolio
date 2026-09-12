@@ -177,7 +177,7 @@
 		<p>Lahr, Germany. Building self-hosted infrastructure & Discord tools at Opus Host.</p>
 	</div>
 
-	<div class="mt-1 flex items-center justify-center gap-4 text-neutral-400">
+	<div class="mt-2 flex items-center justify-center gap-5 text-neutral-400">
 		<!-- Cal.com -->
 		<a
 			href="https://cal.com/benjaminoliverblanke"
@@ -189,8 +189,8 @@
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				width="18"
-				height="18"
+				width="20"
+				height="20"
 				viewBox="0 0 24 24"
 				fill="none"
 				stroke="currentColor"
@@ -235,19 +235,15 @@
 			class="text-neutral-400 transition-colors hover:text-white"
 		>
 			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="19"
-				height="19"
+				width="20"
+				height="20"
 				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="1.7"
-				stroke-linecap="round"
-				stroke-linejoin="round"
+				fill="currentColor"
+				xmlns="http://www.w3.org/2000/svg"
 			>
-				<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-				<path d="M16 11.37a4 4 0 1 1-4.73-4.73 4 4 0 0 1 4.73 4.73z" />
-				<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+				<path
+					d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 2A3.75 3.75 0 0 0 4 7.75v8.5A3.75 3.75 0 0 0 7.75 20h8.5A3.75 3.75 0 0 0 20 16.25v-8.5A3.75 3.75 0 0 0 16.25 4h-8.5ZM17.5 5.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"
+				/>
 			</svg>
 		</a>
 	</div>
