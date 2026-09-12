@@ -224,5 +224,31 @@
 				/>
 			</svg>
 		</a>
+
+		<!-- Instagram -->
+		<a
+			href="https://www.instagram.com/benjaminoliverblanke/"
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="Instagram"
+			title="Instagram"
+			class="text-neutral-400 transition-colors hover:text-white"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="19"
+				height="19"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.7"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+				<path d="M16 11.37a4 4 0 1 1-4.73-4.73 4 4 0 0 1 4.73 4.73z" />
+				<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+			</svg>
+		</a>
 	</div>
 </section>
