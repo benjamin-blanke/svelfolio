@@ -5,6 +5,7 @@
 	import { createWebHaptics } from 'web-haptics/svelte';
 
 	import Icon from '$lib/components/icon.svelte';
+	import { track } from '$lib/analytics';
 
 	import type { LayoutProps } from './$types';
 
@@ -21,7 +22,7 @@
 	<nav class="bg-ash-700 sticky top-0 z-50 mb-2 flex shrink-0 items-center overflow-x-auto overscroll-x-contain select-none">
 		{#each data.techstacks as item (item)}
 			<a
-				onclick={() => trigger()}
+				onclick={() => { trigger(); track('techstack_filter', { techstack: item ?? 'All Projects' }); }}
 				href={item === 'All Projects' ? '/projects' : `/projects?techstack=${item}`}
 				data-active={activeTechstack === item || (activeTechstack === '' && item === 'All Projects')}
 				class="text-ash-300 data-[active=true]:bg-ash-300 data-[active=true]:text-ash-800 flex shrink-0 items-center gap-1.5 px-3 py-0.5 leading-none transition-all"
