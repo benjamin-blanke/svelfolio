@@ -37,7 +37,7 @@ export async function validateGitHubCode(code: string): Promise<{ accessToken: s
 	const headers: Record<string, string> = {
 		Accept: 'application/json',
 		'Content-Type': 'application/x-www-form-urlencoded',
-		'User-Agent': 'wiscaksono-site',
+		'User-Agent': 'benjamin-blanke-svelfolio',
 		Authorization: `Basic ${Buffer.from(`${GITHUB_CLIENT_ID}:${GITHUB_CLIENT_SECRET}`).toString('base64')}`
 	};
 
