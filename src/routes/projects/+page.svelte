@@ -18,11 +18,23 @@
 	const { trigger, destroy } = createWebHaptics();
 
 	onDestroy(destroy);
+
+	function relativeTime(value: string) {
+		const diff = Date.now() - new Date(value).getTime();
+		const minutes = Math.max(0, Math.floor(diff / 60_000));
+		if (minutes < 1) return 'just now';
+		if (minutes < 60) return `${minutes}m ago`;
+		const hours = Math.floor(minutes / 60);
+		if (hours < 24) return `${hours}h ago`;
+		const days = Math.floor(hours / 24);
+		if (days < 30) return `${days}d ago`;
+		return `${Math.floor(days / 30)}mo ago`;
+	}
 </script>
 
 <Metadata
 	title="Projects | Benjamin"
-	description="Discover the interactive brilliance of my projects, peruse my polished portfolio, and delve into a sneak peek of my formidable technical prowess. Uncover a world where innovation meets functionality, showcased through a meticulously crafted Next.js application. Elevate your digital experience with a seamless blend of creativity and technical finesse."
+	description="Discover the interactive brilliance of my projects, peruse my polished portfolio, and delve into a sneak peek of my formidable technical prowess. Uncover a world where innovation meets functionality, showcased through a minimal SvelteKit portfolio. Explore projects, tools, and live GitHub activity."
 />
 
 <h1 class="sr-only">Benjamin Blanke's Projects</h1>
@@ -50,6 +62,14 @@
 			</figure>
 			<div class="p-2">
 				<p class="line-clamp-4 text-sm">{article.description}</p>
+				{#if article.githubData}
+					<div class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-ash-500">
+						{#if article.githubData.language}<span>{article.githubData.language}</span><span>·</span>{/if}
+						<span>pushed {relativeTime(article.githubData.pushedAt)}</span>
+						<span>·</span><span>★ {article.githubData.stars}</span>
+						<span>·</span><span>⑂ {article.githubData.forks}</span>
+					</div>
+				{/if}
 			</div>
 		</a>
 	{/each}
