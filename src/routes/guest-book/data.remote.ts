@@ -27,8 +27,26 @@ export const getGuestsBook = query(async () => {
 
 	const currentUserId = locals.user?.id ?? null;
 	const guestBooks = await getGuestBooksPrepared.execute({ currentUserId });
+	const replies = await db
+		.select({
+			id: table.guestBookReply.id,
+			guestBookId: table.guestBookReply.guestBookId,
+			content: table.guestBookReply.content,
+			userId: table.guestBookReply.userId,
+			username: table.user.username,
+			createdAt: table.guestBookReply.createdAt
+		})
+		.from(table.guestBookReply)
+		.innerJoin(table.user, eq(table.guestBookReply.userId, table.user.id))
+		.orderBy(table.guestBookReply.createdAt);
 
-	return { user: locals.user, guestBooks };
+	return {
+		user: locals.user,
+		guestBooks: guestBooks.map((item) => ({
+			...item,
+			replies: replies.filter((reply) => reply.guestBookId === item.id)
+		}))
+	};
 });
 
 export const insertGuestBook = form('unchecked', async ({ content }: { content: string }) => {
@@ -75,3 +93,29 @@ export const deleteGuestBook = command('unchecked', async (guestBookId: number) 
 	await db.delete(table.guestBook).where(and(eq(table.guestBook.id, guestBookId), eq(table.guestBook.userId, locals.user.id)));
 	await getGuestsBook().refresh();
 });
+
+
+export const insertGuestBookReply = command(
+	'unchecked',
+	async ({ guestBookId, content }: { guestBookId: number; content: string }) => {
+		const { locals } = getRequestEvent();
+		if (!locals.user) return fail(401, { error: 'Unauthorized' });
+		if (locals.user.username.toLowerCase() !== 'benjamin-blanke') return fail(403, { error: 'Owner only' });
+		if (!content || content.trim().length < 1 || content.trim().length > 140) return fail(400, { error: 'Invalid content length' });
+
+		const [guestBookExists] = await db
+			.select({ id: table.guestBook.id })
+			.from(table.guestBook)
+			.where(eq(table.guestBook.id, guestBookId));
+		if (!guestBookExists) return fail(404, { error: 'Message not found' });
+
+		await db.insert(table.guestBookReply).values({
+			guestBookId,
+			userId: locals.user.id,
+			content: content.trim(),
+			createdAt: new Date()
+		});
+
+		await getGuestsBook().refresh();
+	}
+);
