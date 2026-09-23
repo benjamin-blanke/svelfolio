@@ -55,6 +55,7 @@
 <svelte:document onfullscreenchange={handleFullscreenChange} />
 
 <svelte:head>
+	<script defer src="https://umami.blanke.lol/script.js" data-website-id="3d3dcdd1-32a5-4d39-83fc-bfc155f63567"></script>
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html data.siteSchemaHtml}
 </svelte:head>
