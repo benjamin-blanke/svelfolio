@@ -25,7 +25,7 @@
 	description="Discover the interactive brilliance of my projects, peruse my polished portfolio, and delve into a sneak peek of my formidable technical prowess. Uncover a world where innovation meets functionality, showcased through a meticulously crafted Next.js application. Elevate your digital experience with a seamless blend of creativity and technical finesse."
 />
 
-<h1 class="sr-only">Wisnu Wicaksono's Projects</h1>
+<h1 class="sr-only">Benjamin Blanke's Projects</h1>
 
 <main class="grid gap-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	{#each articles as article (article.slug)}
