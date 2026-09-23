@@ -32,10 +32,10 @@
 
 <h1 class="sr-only">Benjamin Blanke's Guest Book</h1>
 
-<section class="flex-1 grow space-y-3 overflow-y-auto overscroll-y-contain px-3 lg:px-4">
+<section class="flex-1 grow overflow-y-auto overscroll-y-contain px-4 py-3 sm:px-5 lg:px-4 lg:py-0">
 	{#if data}
-		<form class="flex flex-col gap-2 text-sm lg:flex-row lg:items-center" {...insertGuestBook}>
-			<p class="truncate lg:w-36">
+		<form class="mb-5 flex flex-col gap-3 text-sm lg:mb-3 lg:flex-row lg:items-center lg:gap-2" {...insertGuestBook}>
+			<p class="truncate text-base lg:w-36 lg:text-sm">
 				<span class="text-cyan">~</span>/{data.user ? data.user.username.toLowerCase().replace(/\s/g, '-') : 'guest'}
 			</p>
 			<p class="hidden lg:block">:</p>
@@ -48,16 +48,16 @@
 				autoComplete="off"
 				disabled={!data.user}
 				placeholder={data.user ? 'Leave a message' : 'Sign in with GitHub to leave a message'}
-				class="placeholder:text-ash-500 caret-cyan min-w-0 flex-1 bg-transparent outline-none disabled:opacity-50"
+				class="placeholder:text-ash-500 caret-cyan min-w-0 flex-1 border-b border-ash-700 bg-transparent pb-2 text-base outline-none focus:border-ash-400 disabled:opacity-50 lg:border-0 lg:pb-0 lg:text-sm"
 			/>
 
 			{#if data.user}
 				<div class="flex items-center gap-2 lg:w-40">
 					<img src={avatarUrl(data.user.username)} alt="" class="h-5 w-5 rounded-full" />
-					<button onclick={() => trigger()} class="bg-ash-400 text-ash-800 flex-1 px-2 py-0.5">Submit</button>
+					<button onclick={() => trigger()} class="bg-ash-400 text-ash-800 flex-1 px-3 py-2 text-sm lg:px-2 lg:py-0.5">Submit</button>
 				</div>
 			{:else}
-				<a onclick={() => trigger()} class="bg-ash-400 text-ash-800 flex w-full items-center justify-center gap-2 px-2 py-0.5 lg:w-40" href="/api/auth">
+				<a onclick={() => trigger()} class="bg-ash-400 text-ash-800 flex w-full items-center justify-center gap-2 px-3 py-2 text-sm lg:w-40 lg:px-2 lg:py-0.5" href="/api/auth">
 					<svg width="14" height="14" fill="none" viewBox="0 0 14 14" aria-hidden="true">
 						<path fill="currentColor" fill-rule="evenodd" d="M7.005 1C3.685 1 1 3.75 1 7.152c0 2.72 1.72 5.022 4.106 5.836.298.062.408-.132.408-.295 0-.143-.01-.631-.01-1.14-1.67.366-2.018-.734-2.018-.734-.269-.713-.667-.896-.667-.896-.546-.377.04-.377.04-.377.607.04.925.631.925.631.537.937 1.402.673 1.75.51.05-.398.208-.673.377-.826C4.58 9.72 3.177 9.19 3.177 6.826c0-.672.239-1.222.617-1.65-.06-.153-.269-.784.06-1.63 0 0 .506-.163 1.65.632.49-.135.994-.203 1.501-.204.507 0 1.024.071 1.501.204 1.144-.795 1.65-.632 1.65-.632.329.846.12 1.477.06 1.63.388.428.617.978.617 1.65 0 2.363-1.402 2.883-2.744 3.035.218.194.407.56.407 1.141 0 .825-.01 1.487-.01 1.691 0 .163.11.357.408.296C11.28 12.172 13 9.872 13 7.152 13.01 3.75 10.316 1 7.005 1z" clip-rule="evenodd" />
 					</svg>
@@ -74,17 +74,17 @@
 		{:else}
 			<ul class="divide-ash-700 flex flex-col divide-y text-sm lg:divide-y-0">
 				{#each data.guestBooks as item (item.id)}
-					<li class="group flex gap-2 py-2 lg:items-center lg:py-1" class:animate-pulse={item.id < 0}>
-						<img src={avatarUrl(item.username)} alt="" loading="lazy" class="mt-0.5 h-6 w-6 shrink-0 rounded-full lg:mt-0" />
+					<li class="group flex gap-3 py-4 first:pt-1 lg:items-center lg:gap-2 lg:py-1" class:animate-pulse={item.id < 0}>
+						<img src={avatarUrl(item.username)} alt="" loading="lazy" class="mt-0.5 h-8 w-8 shrink-0 rounded-full lg:mt-0 lg:h-6 lg:w-6" />
 
 						<div class="min-w-0 flex-1 lg:flex lg:items-center lg:gap-2">
-							<p class="truncate lg:w-32 lg:flex-none">
+							<p class="truncate text-[15px] lg:w-32 lg:flex-none lg:text-sm">
 								<span class="text-cyan">~</span>/{item.username.toLowerCase().replace(/\s/g, '-')}
 							</p>
 							<p class="hidden lg:block">:</p>
-							<p class="mt-1 break-words text-ash-200 lg:mt-0 lg:flex-1">{item.content}</p>
+							<p class="mt-2 break-words text-[15px] leading-relaxed text-ash-200 lg:mt-0 lg:flex-1 lg:text-sm lg:leading-normal">{item.content}</p>
 
-							<div class="mt-1.5 flex items-center gap-3 text-xs text-ash-500 lg:mt-0 lg:shrink-0">
+							<div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-ash-500 lg:mt-0 lg:shrink-0 lg:flex-nowrap lg:text-xs">
 								{#if data.user && item.id > 0}
 									<button
 										onclick={async () => {
