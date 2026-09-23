@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
+	import { PUBLIC_DISCORD_USER_ID } from '$env/static/public';
 	import { createWebHaptics } from 'web-haptics/svelte';
 	import Metadata from '$lib/components/metadata.svelte';
+
 	const { trigger, destroy } = createWebHaptics();
 	onDestroy(destroy);
+
 	const TEXT = 'BENJAMIN';
 
 	const FONT_MAP = {
@@ -38,10 +41,12 @@
 		Crawford: () => import('figlet/importable-fonts/Crawford.js').then((m) => m.default),
 		Alpha: () => import('figlet/importable-fonts/Alpha.js').then((m) => m.default),
 		Wavy: () => import('figlet/importable-fonts/Wavy.js').then((m) => m.default),
-		'Small Isometric1': () => import('figlet/importable-fonts/Small Isometric1.js').then((m) => m.default),
+		'Small Isometric1': () =>
+			import('figlet/importable-fonts/Small Isometric1.js').then((m) => m.default),
 		Rozzo: () => import('figlet/importable-fonts/Rozzo.js').then((m) => m.default),
 		Nancyj: () => import('figlet/importable-fonts/Nancyj.js').then((m) => m.default)
 	} as const;
+
 	const FONTS = Object.keys(FONT_MAP) as (keyof typeof FONT_MAP)[];
 	const fontLoaders = FONT_MAP;
 
@@ -57,6 +62,109 @@
 	let art = $state(INITIAL.trimEnd());
 	let loading = $state(false);
 
+	/* ─────────────────────────────────────────────
+	   Lanyard / Discord Presence
+	───────────────────────────────────────────── */
+
+	let listeningTo = $state<string | null>(null);
+
+	type LanyardResponse = {
+		success: boolean;
+		data?: {
+			listening_to_spotify?: boolean;
+			spotify?: {
+				song?: string;
+			} | null;
+
+			activities?: Array<{
+				name?: string;
+				type?: number;
+				details?: string;
+				state?: string;
+			}>;
+		};
+	};
+
+	async function refreshListening() {
+		if (!PUBLIC_DISCORD_USER_ID) {
+			listeningTo = null;
+			return;
+		}
+
+		try {
+			const response = await fetch(
+				`https://api.lanyard.rest/v1/users/${PUBLIC_DISCORD_USER_ID}`,
+				{
+					cache: 'no-store'
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error(`Lanyard returned ${response.status}`);
+			}
+
+			const payload = (await response.json()) as LanyardResponse;
+			const data = payload.data;
+
+			if (!payload.success || !data) {
+				listeningTo = null;
+				return;
+			}
+
+			/*
+			 * Spotify has its own convenient Lanyard object.
+			 */
+			if (data.listening_to_spotify && data.spotify?.song) {
+				listeningTo = data.spotify.song;
+				return;
+			}
+
+			/*
+			 * Discord activity type 2 = Listening.
+			 *
+			 * This allows the display to also work with other
+			 * listening activities Discord exposes.
+			 */
+			const activity = data.activities?.find(
+				(item) => item.type === 2
+			);
+
+			listeningTo =
+				activity?.details ||
+				activity?.state ||
+				activity?.name ||
+				null;
+		} catch {
+			/*
+			 * Presence is completely optional.
+			 * If Lanyard is unreachable, simply hide the element.
+			 */
+			listeningTo = null;
+		}
+	}
+
+	onMount(() => {
+		/*
+		 * Load immediately.
+		 */
+		void refreshListening();
+
+		/*
+		 * Refresh every 15 seconds so the currently playing
+		 * track updates without reloading the portfolio.
+		 */
+		const interval = window.setInterval(
+			() => void refreshListening(),
+			15_000
+		);
+
+		return () => {
+			window.clearInterval(interval);
+		};
+	});
+
+	/* ───────────────────────────────────────────── */
+
 	let sectionEl = $state<HTMLElement | null>(null);
 	let codeEl = $state<HTMLElement | null>(null);
 
@@ -65,30 +173,52 @@
 
 	async function getFiglet() {
 		if (figletInstance) return figletInstance;
+
 		const mod = await import('figlet');
+
 		figletInstance = (mod.default ?? mod) as typeof import('figlet').default;
+
 		return figletInstance;
 	}
 
-	async function ensureFont(figlet: typeof import('figlet').default, name: keyof typeof FONT_MAP) {
+	async function ensureFont(
+		figlet: typeof import('figlet').default,
+		name: keyof typeof FONT_MAP
+	) {
 		if (parsedFonts.has(name)) return;
+
 		const loader = fontLoaders[name];
+
 		if (!loader) return;
+
 		const fontData = await loader();
+
 		figlet.parseFont(name, fontData);
+
 		parsedFonts.add(name);
 	}
 
 	async function shuffle() {
 		trigger();
+
 		if (loading) return;
+
 		loading = true;
+
 		try {
 			const pool = FONTS.filter((f) => f !== currentFont);
-			const next = pool[Math.floor(Math.random() * pool.length)];
+
+			const next =
+				pool[Math.floor(Math.random() * pool.length)];
+
 			const figlet = await getFiglet();
+
 			await ensureFont(figlet, next);
-			const generated = figlet.textSync(TEXT, { font: next as never });
+
+			const generated = figlet.textSync(TEXT, {
+				font: next as never
+			});
+
 			art = generated;
 			currentFont = next;
 		} catch {
@@ -100,40 +230,69 @@
 
 	function fit() {
 		if (!codeEl || !sectionEl) return;
-		// reset to CSS clamp then scale to target 60% width (sweet spot, not full bleed)
+
 		codeEl.style.fontSize = '';
-		const available = sectionEl.clientWidth - 16; // 1rem gutter
+
+		const available = sectionEl.clientWidth - 16;
 		const needed = codeEl.scrollWidth;
+
 		if (needed === 0 || available <= 0) return;
+
 		const scale = available / needed;
+
 		if (Math.abs(scale - 1) < 0.02) return;
-		const computed = parseFloat(getComputedStyle(codeEl).fontSize);
+
+		const computed = parseFloat(
+			getComputedStyle(codeEl).fontSize
+		);
+
 		if (isNaN(computed)) return;
+
 		const isSmall = scale > 1;
-		// small fonts fill 60-65%, large fonts fill ~92% to avoid huge
+
 		const target = isSmall ? 0.62 : 0.92;
-		const cappedScale = isSmall ? Math.min(scale, 2.2) : scale;
-		const next = computed * cappedScale * target;
+		const cappedScale = isSmall
+			? Math.min(scale, 2.2)
+			: scale;
+
+		const next =
+			computed * cappedScale * target;
+
 		const max = isSmall ? 14 : 20;
-		const clamped = Math.max(6, Math.min(next, max));
+
+		const clamped = Math.max(
+			6,
+			Math.min(next, max)
+		);
+
 		codeEl.style.fontSize = `${clamped}px`;
 	}
 
 	$effect(() => {
-		// re-run on art / element mount and window resize
 		art;
 		codeEl;
 		sectionEl;
+
 		if (!codeEl || !sectionEl) return;
+
 		fit();
+
 		const ro = new ResizeObserver(() => fit());
+
 		ro.observe(sectionEl);
 		ro.observe(codeEl);
+
 		const onResize = () => fit();
+
 		window.addEventListener('resize', onResize);
+
 		return () => {
 			ro.disconnect();
-			window.removeEventListener('resize', onResize);
+
+			window.removeEventListener(
+				'resize',
+				onResize
+			);
 		};
 	});
 </script>
@@ -171,13 +330,46 @@
 		</code>
 	{/key}
 
-	<p class="sr-only">Benjamin Blanke</p>
+	<p class="sr-only">
+		Benjamin Blanke
+	</p>
 
 	<div class="text-center">
-		<p>Lahr, Germany. Building self-hosted infrastructure & Discord tools at Opus Host.</p>
+		<p>
+			Lahr, Germany. Building self-hosted infrastructure & Discord tools at Opus Host.
+		</p>
 	</div>
 
+	<!-- Lanyard Listening Status -->
+	{#if listeningTo}
+		<div
+			class="flex items-center justify-center gap-2 text-sm text-neutral-400 transition-colors hover:text-white"
+			title={`Listening to ${listeningTo}`}
+		>
+			<svg
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.7"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+			>
+				<path d="M9 18V5l11-2v13" />
+				<circle cx="6" cy="18" r="3" />
+				<circle cx="17" cy="16" r="3" />
+			</svg>
+
+			<span class="max-w-[min(80vw,30rem)] truncate">
+				Listening to {listeningTo}
+			</span>
+		</div>
+	{/if}
+
 	<div class="mt-2 flex items-center justify-center gap-5 text-neutral-400">
+
 		<!-- Cal.com -->
 		<a
 			href="https://cal.com/benjaminoliverblanke"
@@ -198,8 +390,17 @@
 				stroke-linecap="round"
 				stroke-linejoin="round"
 			>
-				<rect x="3" y="4" width="18" height="17" rx="3" />
-				<path d="M16 2v4M8 2v4M3 10h18" />
+				<rect
+					x="3"
+					y="4"
+					width="18"
+					height="17"
+					rx="3"
+				/>
+
+				<path
+					d="M16 2v4M8 2v4M3 10h18"
+				/>
 			</svg>
 		</a>
 
