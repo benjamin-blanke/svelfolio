@@ -5,6 +5,7 @@
 	import { createWebHaptics } from 'web-haptics/svelte';
 
 	import Metadata from '$lib/components/metadata.svelte';
+	import { track } from '$lib/analytics';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -42,7 +43,7 @@
 <main class="grid gap-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	{#each articles as article (article.slug)}
 		<a
-			onclick={() => trigger()}
+			onclick={() => { trigger(); track('project_open', { project: article.slug, title: article.title, has_github: Boolean(article.githubData) }); }}
 			href={`/projects/${article.slug}` + (activeTechstack ? `?techstack=${activeTechstack}` : '')}
 			class="divide-ash-700 border-ash-700 divide-y overflow-hidden border select-none"
 			aria-label={`View details for project: ${article.title}`}
