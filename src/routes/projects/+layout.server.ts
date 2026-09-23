@@ -14,7 +14,18 @@ function resolvePoster(poster: string | Picture): Picture {
 	return mod;
 }
 
-export const load: LayoutServerLoad = async ({ setHeaders }) => {
+function githubRepoPath(url: string) {
+	try {
+		const parsed = new URL(url);
+		if (parsed.hostname !== 'github.com') return null;
+		const [owner, repo] = parsed.pathname.split('/').filter(Boolean);
+		return owner && repo ? `${owner}/${repo.replace(/\.git$/, '')}` : null;
+	} catch {
+		return null;
+	}
+}
+
+export const load: LayoutServerLoad = async ({ setHeaders, fetch }) => {
 	let allTechstacks: string[] = [];
 	const items: Project[] = [];
 
@@ -27,6 +38,31 @@ export const load: LayoutServerLoad = async ({ setHeaders }) => {
 		if (file && typeof file === 'object' && 'metadata' in file && slug) {
 			const metadata = file.metadata as Omit<Project, 'slug'> & { techstack?: string[]; poster: string | Picture };
 			const post = { ...metadata, poster: resolvePoster(metadata.poster), slug } satisfies Project;
+
+			if (metadata.github) {
+				const repo = githubRepoPath(metadata.github);
+				if (repo) {
+					try {
+						const response = await fetch(`https://api.github.com/repos/${repo}`, {
+							headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'svelfolio' }
+						});
+						if (response.ok) {
+							const github = await response.json();
+							post.githubData = {
+								fullName: github.full_name,
+								url: github.html_url,
+								language: github.language,
+								stars: github.stargazers_count ?? 0,
+								forks: github.forks_count ?? 0,
+								pushedAt: github.pushed_at
+							};
+						}
+					} catch {
+						// GitHub metadata is optional; keep the project usable if GitHub is unavailable.
+					}
+				}
+			}
+
 			items.push(post);
 			if (metadata.techstack && Array.isArray(metadata.techstack)) allTechstacks = allTechstacks.concat(metadata.techstack);
 		}
