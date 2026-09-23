@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { page } from '$app/state';
-	import { PUBLIC_DISCORD_USER_ID } from '$env/static/public';
+		import { PUBLIC_DISCORD_USER_ID } from '$env/static/public';
 	import { createWebHaptics } from 'web-haptics/svelte';
 	import Metadata from '$lib/components/metadata.svelte';
 	import { track } from '$lib/analytics';
@@ -60,7 +59,7 @@
 ██████╔╝███████╗██║ ╚████║╚█████╔╝██║  ██║██║ ╚═╝ ██║██║██║ ╚████║
 ╚═════╝ ╚══════╝╚═╝  ╚═══╝ ╚════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝`;
 
-	let sudoMode = $derived(page.url.searchParams.has('sudo'));
+	let sudoMode = $state(false);
 	let sudoStep = $state(0);
 	let sudoTimer: number | undefined;
 
@@ -202,6 +201,8 @@
 	}
 
 	onMount(() => {
+		// Query parameters are client-only here because the homepage is prerendered.
+		sudoMode = new URLSearchParams(window.location.search).has('sudo');
 		if (sudoMode) {
 			track('sudo_easter_egg', { route: '/' });
 			sudoStep = 1;
