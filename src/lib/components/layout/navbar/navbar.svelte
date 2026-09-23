@@ -62,8 +62,8 @@
 		</a>
 		<p>-- VIEW --</p>
 	</div>
-	<div class="flex items-center justify-between gap-20 overflow-x-auto overscroll-x-contain px-2 py-3 leading-none lg:px-0 lg:py-0">
-		<ul class="flex items-center">
+	<div class="flex min-w-max items-center justify-between gap-6 px-2 py-3 leading-none lg:min-w-0 lg:gap-20 lg:px-0 lg:py-0">
+		<ul class="flex items-center pr-2">
 			{#each navbarMenu as { title, href, key } (href)}
 				{@const parts = getHighlightedParts(title, key)}
 				{@const isOnCurrentPath = isActive(href, currentPath)}
