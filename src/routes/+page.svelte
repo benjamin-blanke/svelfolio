@@ -444,7 +444,10 @@
 				<path d="M12 12v9" />
 				<path d="M20.4 17.5A5 5 0 0 0 18 8.2 7 7 0 0 0 4.3 10.3 4.5 4.5 0 0 0 5.5 19H7" />
 			</svg>
-			<span class="truncate">
+			<span class="min-w-0 truncate sm:hidden">
+				Last pushed {lastPush.repo.split('/').at(-1)} · {formatRelativeTime(lastPush.pushedAt)}
+			</span>
+			<span class="hidden min-w-0 truncate sm:inline">
 				Last pushed {lastPush.repo} · {formatRelativeTime(lastPush.pushedAt)}
 			</span>
 		</a>
