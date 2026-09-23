@@ -72,6 +72,8 @@
 		message: string;
 		url: string;
 		pushedAt: string;
+		commitCount: number;
+		sha?: string;
 	} | null>(null);
 
 	type LanyardResponse = {
@@ -100,6 +102,8 @@
 				message?: string;
 				url?: string;
 				pushedAt?: string;
+				commitCount?: number;
+				sha?: string;
 			};
 
 			if (!payload.repo || !payload.url || !payload.pushedAt) {
@@ -111,7 +115,9 @@
 				repo: payload.repo,
 				message: payload.message ?? 'Updated repository',
 				url: payload.url,
-				pushedAt: payload.pushedAt
+				pushedAt: payload.pushedAt,
+				commitCount: payload.commitCount ?? 1,
+				sha: payload.sha
 			};
 		} catch {
 			lastPush = null;
@@ -426,32 +432,37 @@
 			href={lastPush.url}
 			target="_blank"
 			rel="noopener noreferrer"
-			class="flex max-w-[min(88vw,42rem)] items-center justify-center gap-2 text-sm text-neutral-400 transition-colors hover:text-white"
-			title={`Last pushed to ${lastPush.repo}: ${lastPush.message}`}
+			class="group flex max-w-[min(92vw,44rem)] items-start gap-2 text-left text-sm text-neutral-400 transition-colors hover:text-white"
+			title={`Open latest push to ${lastPush.repo}`}
 		>
-			<svg
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="1.7"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				aria-hidden="true"
-			>
-				<path d="M8 17l4 4 4-4" />
-				<path d="M12 12v9" />
-				<path d="M20.4 17.5A5 5 0 0 0 18 8.2 7 7 0 0 0 4.3 10.3 4.5 4.5 0 0 0 5.5 19H7" />
+			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true">
+				<circle cx="6" cy="5" r="2" />
+				<circle cx="18" cy="6" r="2" />
+				<circle cx="6" cy="19" r="2" />
+				<path d="M6 7v10" />
+				<path d="M8 7.5c2.5 0 3.5 3 6 3h2" />
 			</svg>
-			<span class="min-w-0 truncate sm:hidden">
-				Last pushed {lastPush.repo.split('/').at(-1)} · {formatRelativeTime(lastPush.pushedAt)}
-			</span>
-			<span class="hidden min-w-0 truncate sm:inline">
-				Last pushed {lastPush.repo} · {formatRelativeTime(lastPush.pushedAt)}
+			<span class="min-w-0">
+				<span class="flex min-w-0 items-center gap-1.5">
+					<span class="text-neutral-300">git push</span>
+					<span class="min-w-0 truncate">{lastPush.repo.split('/').at(-1)}</span>
+					<span class="shrink-0 text-neutral-600">·</span>
+					<span class="shrink-0">{formatRelativeTime(lastPush.pushedAt)}</span>
+				</span>
+				<span class="block max-w-[min(78vw,36rem)] truncate text-xs text-neutral-600 transition-colors group-hover:text-neutral-400">
+					{lastPush.message}{lastPush.sha ? ` · ${lastPush.sha}` : ''}{lastPush.commitCount > 1 ? ` · ${lastPush.commitCount} commits` : ''}
+				</span>
 			</span>
 		</a>
 	{/if}
+
+	<div class="flex items-center justify-center gap-3 text-xs text-neutral-500">
+		<a href="/projects" class="transition-colors hover:text-white">projects</a>
+		<span class="text-neutral-700">/</span>
+		<a href="/guest-book" class="transition-colors hover:text-white">guest book</a>
+		<span class="text-neutral-700">/</span>
+		<a href="https://status.opus-host.de/en" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-white">status ↗</a>
+	</div>
 
 	<div class="mt-2 flex items-center justify-center gap-5 text-neutral-400">
 
