@@ -4,8 +4,8 @@ import type { Actions } from './$types';
 
 export const prerender = false;
 
-const FROM = 'Benjamin Blanke <buissness@blanke.lol>';
-const INBOX = 'buissness@blanke.lol';
+const FROM = 'Benjamin Blanke <business@blanke.lol>';
+const INBOX = 'be.blanke@pm.me';
 
 function escapeHtml(value: string) {
 	return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char] ?? char);
