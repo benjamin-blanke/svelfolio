@@ -12,6 +12,7 @@
 		{ label: 'About', hint: '/abouts', action: () => goto('/abouts') },
 		{ label: 'Projects', hint: '/projects', action: () => goto('/projects') },
 		{ label: 'Guest Book', hint: '/guest-book', action: () => goto('/guest-book') },
+		{ label: 'Hire Me', hint: '/hire', action: () => goto('/hire') },
 		{ label: 'Imprint', hint: '/imprint', action: () => goto('/imprint') },
 		{ label: 'GitHub', hint: 'external', action: () => window.open('https://github.com/benjamin-blanke', '_blank', 'noopener,noreferrer') },
 		{ label: 'Book a call', hint: 'cal.com', action: () => window.open('https://cal.com/benjaminoliverblanke', '_blank', 'noopener,noreferrer') }
