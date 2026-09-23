@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { onDestroy } from 'svelte';
 	import { createWebHaptics } from 'web-haptics/svelte';
+	import { track } from '$lib/analytics';
 
 	import { navbarMenu } from './navbar-menu';
 	import NavbarListener from './navbar-listener.svelte';
@@ -39,7 +40,7 @@
 
 <nav class="overflow-x-auto overscroll-x-contain text-sm select-none md:text-base lg:px-4 lg:pt-2 lg:pb-2.5">
 	<div class="hidden items-center justify-between gap-2 px-2 lg:flex lg:px-0">
-		<a class="flex items-center gap-0.5" href="https://github.com/benjamin-blanke" target="_blank" rel="norreferrer">
+		<a onclick={() => track('github_profile_open', { source: 'navbar_branch' })} class="flex items-center gap-0.5" href="https://github.com/benjamin-blanke" target="_blank" rel="norreferrer">
 			<svg
 				class="mr-1 h-3 w-3"
 				xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +71,7 @@
 				<li class="shrink-0">
 					<a
 						{href}
-						onclick={() => trigger()}
+						onclick={() => { trigger(); track('navigation', { destination: title, href }); }}
 						data-sveltekit-preload-code="eager"
 						data-sveltekit-preload-data
 						data-active={isOnCurrentPath}
@@ -84,7 +85,7 @@
 			{/each}
 		</ul>
 		<div class="not-sr-only hidden items-center gap-2 lg:flex">
-			<a class="bg-ash-300 shrink-0 px-2 py-0.5 leading-none text-black" href="https://github.com/benjamin-blanke" target="_blank" rel="noreferrer"> Benjamin </a>
+			<a onclick={() => track('github_profile_open', { source: 'navbar_identity' })} class="bg-ash-300 shrink-0 px-2 py-0.5 leading-none text-black" href="https://github.com/benjamin-blanke" target="_blank" rel="noreferrer"> Benjamin </a>
 		</div>
 	</div>
 </nav>
