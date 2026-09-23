@@ -420,6 +420,18 @@
 				</span>
 			</a>
 		{/if}
+
+		<a href="https://status.opus-host.de" target="_blank" rel="noopener noreferrer" class="flex max-w-full items-center justify-center gap-2 transition-colors hover:text-white" title="Opus Host system status">
+			<span class="relative flex h-2.5 w-2.5 shrink-0 items-center justify-center">
+				<span class="absolute h-2.5 w-2.5 rounded-full bg-neutral-500 opacity-30"></span>
+				<span class="relative h-1.5 w-1.5 rounded-full bg-neutral-300"></span>
+			</span>
+			<span class="min-w-0 truncate">
+				<span class="text-neutral-300">Opus</span>
+				<span class="mx-1 text-neutral-600">·</span>
+				<span data-livck-badge="status" data-livck-style="inline" data-livck-theme="dark" data-livck-locale="en" data-livck-animate="false" data-livck-label=""></span>
+			</span>
+		</a>
 	</div>
 
 	<div class="mt-2 flex items-center justify-center gap-5 text-neutral-400">
