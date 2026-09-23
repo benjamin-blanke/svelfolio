@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
+	import { page } from '$app/state';
 	import { PUBLIC_DISCORD_USER_ID } from '$env/static/public';
 	import { createWebHaptics } from 'web-haptics/svelte';
 	import Metadata from '$lib/components/metadata.svelte';
@@ -58,6 +59,10 @@
 ██╔══██╗██╔══╝  ██║╚██╗██║██   ██║██╔══██║██║╚██╔╝██║██║██║╚██╗██║
 ██████╔╝███████╗██║ ╚████║╚█████╔╝██║  ██║██║ ╚═╝ ██║██║██║ ╚████║
 ╚═════╝ ╚══════╝╚═╝  ╚═══╝ ╚════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝`;
+
+	let sudoMode = $derived(page.url.searchParams.has('sudo'));
+	let sudoStep = $state(0);
+	let sudoTimer: number | undefined;
 
 	let currentFont = $state<keyof typeof FONT_MAP>('ANSI Shadow');
 	let art = $state(INITIAL.trimEnd());
@@ -197,6 +202,12 @@
 	}
 
 	onMount(() => {
+		if (sudoMode) {
+			track('sudo_easter_egg', { route: '/' });
+			sudoStep = 1;
+			sudoTimer = window.setTimeout(() => (sudoStep = 2), 850);
+		}
+
 		/*
 		 * Load immediately.
 		 */
@@ -217,6 +228,7 @@
 		);
 
 		return () => {
+			if (sudoTimer) window.clearTimeout(sudoTimer);
 			window.clearInterval(interval);
 			window.clearInterval(githubInterval);
 		};
@@ -361,6 +373,23 @@
 	title="Benjamin"
 	description="Benjamin Blanke — Student and founder of Opus Host, building self-hosted infrastructure, Discord bots, and community tools around Proxmox, Minecraft server hosting, and homelab systems."
 />
+
+{#if sudoMode}
+	<div class="pointer-events-none fixed inset-0 z-[90] grid place-items-center bg-black/75 px-4 backdrop-blur-[2px]">
+		<div class="w-full max-w-xl border border-ash-700 bg-[#080808] p-4 font-mono text-sm shadow-2xl">
+			<p><span class="text-cyan">$</span> sudo access portfolio</p>
+			{#if sudoStep >= 1}
+				<p class="mt-2 text-ash-400">[sudo] password for visitor: <span class="tracking-widest">********</span></p>
+			{/if}
+			{#if sudoStep >= 2}
+				<div class="mt-3">
+					<p>visitor is not in the sudoers file.</p>
+					<p class="text-ash-500">This incident will be reported.</p>
+				</div>
+			{/if}
+		</div>
+	</div>
+{/if}
 
 <section
 	bind:this={sectionEl}
