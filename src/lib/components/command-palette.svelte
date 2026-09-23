@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { track } from '$lib/analytics';
 
 	let open = $state(false);
 	let query = $state('');
@@ -23,7 +24,8 @@
 		query = '';
 	}
 
-	function run(action: () => void) {
+	function run(label: string, action: () => void) {
+		track('command_palette_command', { command: label });
 		action();
 		close();
 	}
@@ -33,6 +35,7 @@
 			if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
 				event.preventDefault();
 				open = !open;
+				if (open) track('command_palette_open', { source: 'keyboard' });
 				if (open) setTimeout(() => input?.focus());
 			}
 			if (event.key === 'Escape') close();
@@ -42,7 +45,7 @@
 	});
 </script>
 
-<button onclick={() => { open = true; setTimeout(() => input?.focus()); }} class="fixed right-3 bottom-16 z-[80] hidden border border-ash-700 bg-ash-800 px-2 py-1 text-[11px] text-ash-400 transition-colors hover:text-white lg:block" aria-label="Open command palette">⌘K</button>
+<button onclick={() => { open = true; track('command_palette_open', { source: 'button' }); setTimeout(() => input?.focus()); }} class="fixed right-3 bottom-16 z-[80] hidden border border-ash-700 bg-ash-800 px-2 py-1 text-[11px] text-ash-400 transition-colors hover:text-white lg:block" aria-label="Open command palette">⌘K</button>
 
 {#if open}
 	<div class="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 px-4 pt-[18vh] backdrop-blur-[2px]" role="presentation" onclick={(event) => { if (event.currentTarget === event.target) close(); }}>
@@ -54,7 +57,7 @@
 			</div>
 			<div class="max-h-72 overflow-y-auto p-1">
 				{#each filtered as command, index (command.label)}
-					<button onclick={() => run(command.action)} class="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ash-300 transition-colors hover:bg-ash-700 hover:text-white" autofocus={index === 0 && query.length > 0}>
+					<button onclick={() => run(command.label, command.action)} class="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ash-300 transition-colors hover:bg-ash-700 hover:text-white" autofocus={index === 0 && query.length > 0}>
 						<span>{command.label}</span><span class="text-xs text-ash-500">{command.hint}</span>
 					</button>
 				{:else}
