@@ -52,3 +52,21 @@ export const guestBookLikeRelations = relations(guestBookLike, ({ one }) => ({
 	guestBook: one(guestBook, { fields: [guestBookLike.guestBookId], references: [guestBook.id] }),
 	user: one(user, { fields: [guestBookLike.userId], references: [user.id] })
 }));
+
+
+export const guestBookReply = pgTable('guest_book_reply', {
+	id: serial('id').primaryKey(),
+	guestBookId: integer('guest_book_id')
+		.notNull()
+		.references(() => guestBook.id, { onDelete: 'cascade' }),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	content: text('content').notNull(),
+	createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).notNull()
+});
+
+export const guestBookReplyRelations = relations(guestBookReply, ({ one }) => ({
+	guestBook: one(guestBook, { fields: [guestBookReply.guestBookId], references: [guestBook.id] }),
+	user: one(user, { fields: [guestBookReply.userId], references: [user.id] })
+}));
