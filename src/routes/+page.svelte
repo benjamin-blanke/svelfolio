@@ -67,6 +67,12 @@
 	───────────────────────────────────────────── */
 
 	let listeningTo = $state<string | null>(null);
+	let lastPush = $state<{
+		repo: string;
+		message: string;
+		url: string;
+		pushedAt: string;
+	} | null>(null);
 
 	type LanyardResponse = {
 		success: boolean;
@@ -84,6 +90,47 @@
 			}>;
 		};
 	};
+
+	async function refreshGitHubActivity() {
+		try {
+			const response = await fetch('/api/github-activity', { cache: 'no-store' });
+			if (!response.ok) throw new Error(`GitHub activity returned ${response.status}`);
+			const payload = (await response.json()) as {
+				repo?: string;
+				message?: string;
+				url?: string;
+				pushedAt?: string;
+			};
+
+			if (!payload.repo || !payload.url || !payload.pushedAt) {
+				lastPush = null;
+				return;
+			}
+
+			lastPush = {
+				repo: payload.repo,
+				message: payload.message ?? 'Updated repository',
+				url: payload.url,
+				pushedAt: payload.pushedAt
+			};
+		} catch {
+			lastPush = null;
+		}
+	}
+
+	function formatRelativeTime(dateString: string) {
+		const diff = Date.now() - new Date(dateString).getTime();
+		const minutes = Math.floor(diff / 60_000);
+		if (minutes < 1) return 'just now';
+		if (minutes < 60) return `${minutes}m ago`;
+		const hours = Math.floor(minutes / 60);
+		if (hours < 24) return `${hours}h ago`;
+		const days = Math.floor(hours / 24);
+		if (days < 30) return `${days}d ago`;
+		const months = Math.floor(days / 30);
+		if (months < 12) return `${months}mo ago`;
+		return `${Math.floor(months / 12)}y ago`;
+	}
 
 	async function refreshListening() {
 		if (!PUBLIC_DISCORD_USER_ID) {
@@ -148,6 +195,7 @@
 		 * Load immediately.
 		 */
 		void refreshListening();
+		void refreshGitHubActivity();
 
 		/*
 		 * Refresh every 15 seconds so the currently playing
@@ -157,9 +205,14 @@
 			() => void refreshListening(),
 			15_000
 		);
+		const githubInterval = window.setInterval(
+			() => void refreshGitHubActivity(),
+			60_000
+		);
 
 		return () => {
 			window.clearInterval(interval);
+			window.clearInterval(githubInterval);
 		};
 	});
 
@@ -366,6 +419,35 @@
 				Listening to {listeningTo}
 			</span>
 		</div>
+	{/if}
+
+	{#if lastPush}
+		<a
+			href={lastPush.url}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="flex max-w-[min(88vw,42rem)] items-center justify-center gap-2 text-sm text-neutral-400 transition-colors hover:text-white"
+			title={`Last pushed to ${lastPush.repo}: ${lastPush.message}`}
+		>
+			<svg
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.7"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+			>
+				<path d="M8 17l4 4 4-4" />
+				<path d="M12 12v9" />
+				<path d="M20.4 17.5A5 5 0 0 0 18 8.2 7 7 0 0 0 4.3 10.3 4.5 4.5 0 0 0 5.5 19H7" />
+			</svg>
+			<span class="truncate">
+				Last pushed {lastPush.repo} · {formatRelativeTime(lastPush.pushedAt)}
+			</span>
+		</a>
 	{/if}
 
 	<div class="mt-2 flex items-center justify-center gap-5 text-neutral-400">
