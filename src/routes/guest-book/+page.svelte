@@ -3,6 +3,7 @@
 	import { createWebHaptics } from 'web-haptics/svelte';
 
 	import Metadata from '$lib/components/metadata.svelte';
+	import { track } from '$lib/analytics';
 
 	import { getGuestsBook, insertGuestBook, toggleLikeGuestBook, deleteGuestBook, insertGuestBookReply } from './data.remote';
 
@@ -38,7 +39,7 @@
 
 <section class="flex-1 grow overflow-y-auto overscroll-y-contain px-4 py-3 sm:px-5 lg:px-4 lg:py-0">
 	{#if data}
-		<form class="mb-5 flex flex-col gap-3 text-sm lg:mb-3 lg:flex-row lg:items-center lg:gap-2" {...insertGuestBook}>
+		<form onsubmit={() => track('guestbook_message_submit')} class="mb-5 flex flex-col gap-3 text-sm lg:mb-3 lg:flex-row lg:items-center lg:gap-2" {...insertGuestBook}>
 			<p class="truncate text-base lg:w-36 lg:text-sm">
 				<span class="text-cyan">~</span>/{data.user ? data.user.username.toLowerCase().replace(/\s/g, '-') : 'guest'}
 				{#if isOwner}<span class="ml-1 text-[10px] text-ash-500">[owner]</span>{/if}
@@ -62,7 +63,7 @@
 					<button onclick={() => trigger()} class="bg-ash-400 text-ash-800 flex-1 px-3 py-2 text-sm lg:px-2 lg:py-0.5">Submit</button>
 				</div>
 			{:else}
-				<a onclick={() => trigger()} class="bg-ash-400 text-ash-800 flex w-full items-center justify-center gap-2 px-3 py-2 text-sm lg:w-40 lg:px-2 lg:py-0.5" href="/api/auth">
+				<a onclick={() => { trigger(); track('guestbook_signin', { provider: 'github' }); }} class="bg-ash-400 text-ash-800 flex w-full items-center justify-center gap-2 px-3 py-2 text-sm lg:w-40 lg:px-2 lg:py-0.5" href="/api/auth">
 					<svg width="14" height="14" fill="none" viewBox="0 0 14 14" aria-hidden="true">
 						<path fill="currentColor" fill-rule="evenodd" d="M7.005 1C3.685 1 1 3.75 1 7.152c0 2.72 1.72 5.022 4.106 5.836.298.062.408-.132.408-.295 0-.143-.01-.631-.01-1.14-1.67.366-2.018-.734-2.018-.734-.269-.713-.667-.896-.667-.896-.546-.377.04-.377.04-.377.607.04.925.631.925.631.537.937 1.402.673 1.75.51.05-.398.208-.673.377-.826C4.58 9.72 3.177 9.19 3.177 6.826c0-.672.239-1.222.617-1.65-.06-.153-.269-.784.06-1.63 0 0 .506-.163 1.65.632.49-.135.994-.203 1.501-.204.507 0 1.024.071 1.501.204 1.144-.795 1.65-.632 1.65-.632.329.846.12 1.477.06 1.63.388.428.617.978.617 1.65 0 2.363-1.402 2.883-2.744 3.035.218.194.407.56.407 1.141 0 .825-.01 1.487-.01 1.691 0 .163.11.357.408.296C11.28 12.172 13 9.872 13 7.152 13.01 3.75 10.316 1 7.005 1z" clip-rule="evenodd" />
 					</svg>
@@ -111,6 +112,7 @@
 											sendingReply = true;
 											try {
 												await insertGuestBookReply({ guestBookId: item.id, content: replyContent });
+												track('guestbook_reply', { message_id: item.id });
 												replyContent = '';
 												replyingTo = null;
 											} finally {
@@ -133,6 +135,7 @@
 										onclick={async () => {
 											trigger();
 											await toggleLikeGuestBook(item.id);
+											track('guestbook_like_toggle', { message_id: item.id, action: item.liked ? 'unlike' : 'like' });
 										}}
 										class="flex items-center gap-1 transition-colors hover:text-white"
 										aria-label={item.liked ? 'Unlike' : 'Like'}
@@ -150,6 +153,7 @@
 											onclick={async () => {
 												trigger();
 												await deleteGuestBook(item.id);
+												track('guestbook_delete', { message_id: item.id });
 											}}
 										>
 											delete
