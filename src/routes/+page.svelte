@@ -416,7 +416,8 @@
 					<circle cx="6" cy="5" r="2" /><circle cx="18" cy="6" r="2" /><circle cx="6" cy="19" r="2" /><path d="M6 7v10" /><path d="M8 7.5c2.5 0 3.5 3 6 3h2" />
 				</svg>
 				<span class="min-w-0 truncate">
-					Pushed <span class="text-neutral-300">{lastPush.repo.split('/').at(-1)}</span>
+					<span class="text-neutral-500">Last pushed</span>
+					<span class="text-neutral-600"> · </span><span class="text-neutral-300">{lastPush.repo.split('/').at(-1)}</span>
 					<span class="text-neutral-600"> · </span>{formatRelativeTime(lastPush.pushedAt)}
 				</span>
 			</a>
