@@ -15,4 +15,13 @@ export interface Project {
 	slug: string;
 	poster: Picture;
 	techstack: string[];
+	github?: string;
+	githubData?: {
+		fullName: string;
+		url: string;
+		language: string | null;
+		stars: number;
+		forks: number;
+		pushedAt: string;
+	};
 }
