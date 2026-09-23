@@ -4,6 +4,7 @@
 	import '../app.css';
 	import Header from '$lib/components/layout/header/header.svelte';
 	import Navbar from '$lib/components/layout/navbar/navbar.svelte';
+	import CommandPalette from '$lib/components/command-palette.svelte';
 
 	let { data, children } = $props();
 
@@ -69,6 +70,7 @@
 	<Header {isFullscreen} {onMouseDown} {toggleFullscreen} />
 	{@render children()}
 	<Navbar />
+	<CommandPalette />
 </main>
 
 <video
