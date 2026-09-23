@@ -67,6 +67,7 @@
 	───────────────────────────────────────────── */
 
 	let listeningTo = $state<string | null>(null);
+	let opusStatus = $state<'operational' | 'degraded' | 'outage' | 'maintenance' | null>(null);
 	let lastPush = $state<{
 		repo: string;
 		message: string;
@@ -92,6 +93,17 @@
 			}>;
 		};
 	};
+
+	async function refreshOpusStatus() {
+		try {
+			const response = await fetch('/api/opus-status', { cache: 'no-store' });
+			if (!response.ok) throw new Error(`Status returned ${response.status}`);
+			const payload = (await response.json()) as { status?: typeof opusStatus };
+			opusStatus = payload.status ?? null;
+		} catch {
+			opusStatus = null;
+		}
+	}
 
 	async function refreshGitHubActivity() {
 		try {
@@ -202,6 +214,7 @@
 		 */
 		void refreshListening();
 		void refreshGitHubActivity();
+		void refreshOpusStatus();
 
 		/*
 		 * Refresh every 15 seconds so the currently playing
@@ -215,10 +228,15 @@
 			() => void refreshGitHubActivity(),
 			60_000
 		);
+		const statusInterval = window.setInterval(
+			() => void refreshOpusStatus(),
+			60_000
+		);
 
 		return () => {
 			window.clearInterval(interval);
 			window.clearInterval(githubInterval);
+			window.clearInterval(statusInterval);
 		};
 	});
 
@@ -421,17 +439,15 @@
 			</a>
 		{/if}
 
-		<a href="https://status.opus-host.de" target="_blank" rel="noopener noreferrer" class="flex max-w-full items-center justify-center gap-2 transition-colors hover:text-white" title="Opus Host system status">
-			<span class="relative flex h-2.5 w-2.5 shrink-0 items-center justify-center">
-				<span class="absolute h-2.5 w-2.5 rounded-full bg-neutral-500 opacity-30"></span>
-				<span class="relative h-1.5 w-1.5 rounded-full bg-neutral-300"></span>
-			</span>
-			<span class="min-w-0 truncate">
-				<span class="text-neutral-300">Opus</span>
-				<span class="mx-1 text-neutral-600">·</span>
-				<span data-livck-badge="status" data-livck-style="inline" data-livck-theme="dark" data-livck-locale="en" data-livck-animate="false" data-livck-label=""></span>
-			</span>
-		</a>
+		{#if opusStatus}
+			<a href="https://status.opus-host.de" target="_blank" rel="noopener noreferrer" class="flex max-w-full items-center justify-center gap-2 transition-colors hover:text-white" title="Open Opus Host status">
+				<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-neutral-400"></span>
+				<span class="min-w-0 truncate">
+					Opus <span class="text-neutral-600">·</span>
+					{opusStatus === 'operational' ? 'all systems operational' : opusStatus === 'degraded' ? 'degraded performance' : opusStatus === 'maintenance' ? 'maintenance' : 'service outage'}
+				</span>
+			</a>
+		{/if}
 	</div>
 
 	<div class="mt-2 flex items-center justify-center gap-5 text-neutral-400">
