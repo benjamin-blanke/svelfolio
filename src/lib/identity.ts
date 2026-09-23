@@ -1,12 +1,8 @@
 export const identity = {
-	name: 'Wisnu Wicaksono',
-	siteName: 'Wiscaksono',
+	name: 'Benjamin Blanke',
+	siteName: 'Benjamin',
 	sameAs: [
-		'https://github.com/wiscaksono',
-		'https://www.linkedin.com/in/wiscaksono',
-		'https://x.com/wiscaksono',
-		'https://instagram.com/this.wsn',
-		'https://bsky.app/profile/wiscaksono.bsky.social',
-		'https://web.facebook.com/wiscaksono'
+		'https://github.com/benjamin-blanke',
+		'https://www.instagram.com/benjaminoliverblanke/'
 	]
 } as const;
