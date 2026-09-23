@@ -54,7 +54,6 @@
 <svelte:document onfullscreenchange={handleFullscreenChange} />
 
 <svelte:head>
-	<script src="https://status.opus-host.de/widget.js" defer></script>
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html data.siteSchemaHtml}
 </svelte:head>
