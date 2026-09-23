@@ -4,12 +4,16 @@
 
 	import Metadata from '$lib/components/metadata.svelte';
 
-	import { getGuestsBook, insertGuestBook, toggleLikeGuestBook, deleteGuestBook } from './data.remote';
+	import { getGuestsBook, insertGuestBook, toggleLikeGuestBook, deleteGuestBook, insertGuestBookReply } from './data.remote';
 
 	const { trigger, destroy } = createWebHaptics();
 	onDestroy(destroy);
 
 	let data = $derived(await getGuestsBook());
+	let replyingTo = $state<number | null>(null);
+	let replyContent = $state('');
+	let sendingReply = $state(false);
+	const isOwner = $derived(data?.user?.username?.toLowerCase() === 'benjamin-blanke');
 
 	function formatDate(value: Date | string) {
 		return new Intl.DateTimeFormat('en', {
@@ -37,6 +41,7 @@
 		<form class="mb-5 flex flex-col gap-3 text-sm lg:mb-3 lg:flex-row lg:items-center lg:gap-2" {...insertGuestBook}>
 			<p class="truncate text-base lg:w-36 lg:text-sm">
 				<span class="text-cyan">~</span>/{data.user ? data.user.username.toLowerCase().replace(/\s/g, '-') : 'guest'}
+				{#if isOwner}<span class="ml-1 text-[10px] text-ash-500">[owner]</span>{/if}
 			</p>
 			<p class="hidden lg:block">:</p>
 			<input
@@ -80,9 +85,47 @@
 						<div class="min-w-0 flex-1 lg:flex lg:items-center lg:gap-2">
 							<p class="truncate text-[15px] lg:w-32 lg:flex-none lg:text-sm">
 								<span class="text-cyan">~</span>/{item.username.toLowerCase().replace(/\s/g, '-')}
+								{#if item.username.toLowerCase() === 'benjamin-blanke'}<span class="ml-1 text-[10px] text-ash-500">[owner]</span>{/if}
 							</p>
 							<p class="hidden lg:block">:</p>
 							<p class="mt-2 break-words text-[15px] leading-relaxed text-ash-200 lg:mt-0 lg:flex-1 lg:text-sm lg:leading-normal">{item.content}</p>
+
+							{#if item.replies?.length}
+								<div class="mt-2 space-y-1.5 lg:mt-1">
+									{#each item.replies as reply (reply.id)}
+										<div class="border-l border-ash-700 pl-2 text-xs">
+											<p class="text-ash-500">↳ <span class="text-cyan">~</span>/{reply.username.toLowerCase().replace(/\s/g, '-')} <span class="text-[10px]">[owner]</span></p>
+											<p class="break-words text-ash-300">{reply.content}</p>
+										</div>
+									{/each}
+								</div>
+							{/if}
+
+							{#if isOwner && item.id > 0}
+								{#if replyingTo === item.id}
+									<form
+										class="mt-2 flex gap-2"
+										onsubmit={async (event) => {
+											event.preventDefault();
+											if (!replyContent.trim() || sendingReply) return;
+											sendingReply = true;
+											try {
+												await insertGuestBookReply({ guestBookId: item.id, content: replyContent });
+												replyContent = '';
+												replyingTo = null;
+											} finally {
+												sendingReply = false;
+											}
+										}}
+									>
+										<input bind:value={replyContent} maxlength="140" autofocus placeholder="Reply as owner..." class="caret-cyan min-w-0 flex-1 border-b border-ash-700 bg-transparent pb-1 text-xs outline-none focus:border-ash-400" />
+										<button disabled={sendingReply} class="text-xs text-ash-400 hover:text-white disabled:opacity-50">send</button>
+										<button type="button" onclick={() => { replyingTo = null; replyContent = ''; }} class="text-xs text-ash-500 hover:text-white">cancel</button>
+									</form>
+								{:else}
+									<button onclick={() => { replyingTo = item.id; replyContent = ''; trigger(); }} class="mt-1 text-[11px] text-ash-500 transition-colors hover:text-white">↳ reply</button>
+								{/if}
+							{/if}
 
 							<div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-ash-500 lg:mt-0 lg:shrink-0 lg:flex-nowrap lg:text-xs">
 								{#if data.user && item.id > 0}
