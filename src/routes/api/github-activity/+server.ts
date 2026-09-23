@@ -58,7 +58,9 @@ export const GET: RequestHandler = async ({ fetch }) => {
 			repo: push.repo.name,
 			message: latestCommit?.message?.split('\n')[0] ?? 'Updated repository',
 			url: commitUrl,
-			pushedAt: push.created_at
+			pushedAt: push.created_at,
+			commitCount: commits.length || 1,
+			sha: latestCommit?.sha?.slice(0, 7)
 		},
 		{
 			headers: {
