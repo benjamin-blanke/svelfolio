@@ -3,6 +3,7 @@
 	import { PUBLIC_DISCORD_USER_ID } from '$env/static/public';
 	import { createWebHaptics } from 'web-haptics/svelte';
 	import Metadata from '$lib/components/metadata.svelte';
+	import { track } from '$lib/analytics';
 
 	const { trigger, destroy } = createWebHaptics();
 	onDestroy(destroy);
@@ -258,6 +259,7 @@
 
 	async function shuffle() {
 		trigger();
+		track('ascii_shuffle', { from_font: currentFont });
 
 		if (loading) return;
 
@@ -409,7 +411,7 @@
 		{/if}
 
 		{#if lastPush}
-			<a href={lastPush.url} target="_blank" rel="noopener noreferrer" class="group flex max-w-full items-center justify-center gap-2 transition-colors hover:text-white" title={`${lastPush.repo}: ${lastPush.message}`}>
+			<a onclick={() => track('latest_push_open', { repository: lastPush.repo.split('/').at(-1) ?? lastPush.repo })} href={lastPush.url} target="_blank" rel="noopener noreferrer" class="group flex max-w-full items-center justify-center gap-2 transition-colors hover:text-white" title={`${lastPush.repo}: ${lastPush.message}`}>
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
 					<circle cx="6" cy="5" r="2" /><circle cx="18" cy="6" r="2" /><circle cx="6" cy="19" r="2" /><path d="M6 7v10" /><path d="M8 7.5c2.5 0 3.5 3 6 3h2" />
 				</svg>
@@ -426,6 +428,7 @@
 
 		<!-- Cal.com -->
 		<a
+			onclick={() => track('cal_open', { source: 'homepage' })}
 			href="https://cal.com/benjaminoliverblanke"
 			target="_blank"
 			rel="noopener noreferrer"
@@ -460,6 +463,7 @@
 
 		<!-- Discord -->
 		<a
+			onclick={() => track('discord_open', { source: 'homepage' })}
 			href="https://discord.gg/opushost"
 			target="_blank"
 			rel="noopener noreferrer"
@@ -482,6 +486,7 @@
 
 		<!-- Instagram -->
 		<a
+			onclick={() => track('instagram_open', { source: 'homepage' })}
 			href="https://www.instagram.com/benjaminoliverblanke/"
 			target="_blank"
 			rel="noopener noreferrer"
@@ -504,6 +509,7 @@
 
 		<!-- GitHub -->
 		<a
+			onclick={() => track('github_profile_open', { source: 'homepage' })}
 			href="https://github.com/benjamin-blanke"
 			target="_blank"
 			rel="noopener noreferrer"
