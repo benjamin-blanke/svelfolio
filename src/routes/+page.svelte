@@ -363,7 +363,7 @@
 
 <section
 	bind:this={sectionEl}
-	class="@container flex grow flex-col items-center justify-center space-y-2.5 overflow-hidden px-2 md:space-y-5"
+	class="@container flex grow flex-col items-center justify-center gap-3 overflow-hidden px-4 md:gap-4"
 >
 	{#key art}
 		<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
@@ -399,69 +399,27 @@
 		</p>
 	</div>
 
-	<!-- Lanyard Listening Status -->
-	{#if listeningTo}
-		<div
-			class="flex items-center justify-center gap-2 text-sm text-neutral-400 transition-colors hover:text-white"
-			title={`Listening to ${listeningTo}`}
-		>
-			<svg
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="1.7"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				aria-hidden="true"
-			>
-				<path d="M9 18V5l11-2v13" />
-				<circle cx="6" cy="18" r="3" />
-				<circle cx="17" cy="16" r="3" />
-			</svg>
+	<div class="mt-1 flex w-full max-w-md flex-col items-center gap-2 text-sm text-neutral-400">
+		{#if listeningTo}
+			<div class="flex max-w-full items-center justify-center gap-2" title={`Listening to ${listeningTo}`}>
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
+					<path d="M9 18V5l11-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="17" cy="16" r="3" />
+				</svg>
+				<span class="truncate">Listening to {listeningTo}</span>
+			</div>
+		{/if}
 
-			<span class="max-w-[min(80vw,30rem)] truncate">
-				Listening to {listeningTo}
-			</span>
-		</div>
-	{/if}
-
-	{#if lastPush}
-		<a
-			href={lastPush.url}
-			target="_blank"
-			rel="noopener noreferrer"
-			class="group flex max-w-[min(92vw,44rem)] items-start gap-2 text-left text-sm text-neutral-400 transition-colors hover:text-white"
-			title={`Open latest push to ${lastPush.repo}`}
-		>
-			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true">
-				<circle cx="6" cy="5" r="2" />
-				<circle cx="18" cy="6" r="2" />
-				<circle cx="6" cy="19" r="2" />
-				<path d="M6 7v10" />
-				<path d="M8 7.5c2.5 0 3.5 3 6 3h2" />
-			</svg>
-			<span class="min-w-0">
-				<span class="flex min-w-0 items-center gap-1.5">
-					<span class="text-neutral-300">git push</span>
-					<span class="min-w-0 truncate">{lastPush.repo.split('/').at(-1)}</span>
-					<span class="shrink-0 text-neutral-600">·</span>
-					<span class="shrink-0">{formatRelativeTime(lastPush.pushedAt)}</span>
+		{#if lastPush}
+			<a href={lastPush.url} target="_blank" rel="noopener noreferrer" class="group flex max-w-full items-center justify-center gap-2 transition-colors hover:text-white" title={`${lastPush.repo}: ${lastPush.message}`}>
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
+					<circle cx="6" cy="5" r="2" /><circle cx="18" cy="6" r="2" /><circle cx="6" cy="19" r="2" /><path d="M6 7v10" /><path d="M8 7.5c2.5 0 3.5 3 6 3h2" />
+				</svg>
+				<span class="min-w-0 truncate">
+					Pushed <span class="text-neutral-300">{lastPush.repo.split('/').at(-1)}</span>
+					<span class="text-neutral-600"> · </span>{formatRelativeTime(lastPush.pushedAt)}
 				</span>
-				<span class="block max-w-[min(78vw,36rem)] truncate text-xs text-neutral-600 transition-colors group-hover:text-neutral-400">
-					{lastPush.message}{lastPush.sha ? ` · ${lastPush.sha}` : ''}{lastPush.commitCount > 1 ? ` · ${lastPush.commitCount} commits` : ''}
-				</span>
-			</span>
-		</a>
-	{/if}
-
-	<div class="flex items-center justify-center gap-3 text-xs text-neutral-500">
-		<a href="/projects" class="transition-colors hover:text-white">projects</a>
-		<span class="text-neutral-700">/</span>
-		<a href="/guest-book" class="transition-colors hover:text-white">guest book</a>
-		<span class="text-neutral-700">/</span>
-		<a href="https://status.opus-host.de/en" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-white">status ↗</a>
+			</a>
+		{/if}
 	</div>
 
 	<div class="mt-2 flex items-center justify-center gap-5 text-neutral-400">
