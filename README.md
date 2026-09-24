@@ -9,7 +9,7 @@ Personal portfolio of **Benjamin Blanke**, built with SvelteKit and deployed on 
 - Minimal terminal-inspired responsive interface
 - Projects powered by Markdown
 - GitHub repository metadata and latest push activity
-- Spotify “currently playing” integration
+- Discord / Spotify listening activity through Lanyard
 - Guest book with GitHub OAuth, replies and reactions
 - Hire Me contact form with Resend confirmation emails
 - Command palette with `⌘K` / `Ctrl+K`
@@ -24,7 +24,6 @@ Personal portfolio of **Benjamin Blanke**, built with SvelteKit and deployed on 
 - Tailwind CSS
 - PostgreSQL + Drizzle ORM
 - GitHub API / OAuth
-- Spotify Web API
 - Resend
 - Umami
 - Vercel
@@ -58,34 +57,16 @@ GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
 GITHUB_TOKEN=
 
-SPOTIFY_CLIENT_ID=
-SPOTIFY_CLIENT_SECRET=
-SPOTIFY_REFRESH_TOKEN=
+PUBLIC_DISCORD_USER_ID=
 
 RESEND_API_KEY=
 ```
 
-`PUBLIC_DISCORD_USER_ID` is no longer required; music activity is fetched directly from Spotify.
+`PUBLIC_DISCORD_USER_ID` is used by Lanyard to show current listening activity.
 
-## Spotify setup
+## Listening activity
 
-Create an app in the Spotify Developer Dashboard and configure this exact redirect URI:
-
-```text
-https://blanke.lol/api/spotify/callback
-```
-
-Add `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` to the Vercel Production environment and deploy. Then open:
-
-```text
-https://blanke.lol/api/spotify/login
-```
-
-Authorize the Spotify account whose listening activity should appear on the portfolio. The callback displays a refresh token once. Copy it into Vercel as `SPOTIFY_REFRESH_TOKEN`, redeploy, and treat the token like a password.
-
-The portfolio requests only the `user-read-currently-playing` scope. The browser talks to `/api/spotify`; Spotify credentials and refresh tokens stay server-side.
-
-> The login and callback endpoints exist only to bootstrap the refresh token. They can be removed after setup.
+The homepage uses Lanyard with `PUBLIC_DISCORD_USER_ID` to display Spotify or other Discord listening activity. No Spotify developer credentials are required.
 
 ## Hire Me
 
@@ -132,7 +113,6 @@ The production site is deployed through Vercel from the `main` branch. Configure
 ## Privacy & security
 
 - OAuth and API secrets stay in private server environment variables.
-- Spotify access tokens are generated server-side.
 - The Hire Me form includes server-side validation and a honeypot.
 - Analytics are handled by the self-hosted Umami instance.
 - Do not commit `.env` files or credentials.
