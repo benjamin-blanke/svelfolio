@@ -28,11 +28,6 @@ href: '/guest-book',
 key: 'g'
 },
 {
-title: 'hire-me',
-href: '/hire',
-key: 'r'
-},
-{
 title: 'imprint',
 href: '/legal/imprint',
 key: 'i'
