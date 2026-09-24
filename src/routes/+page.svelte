@@ -72,14 +72,17 @@
 	───────────────────────────────────────────── */
 
 	let listeningTo = $state<string | null>(null);
-	let lastPush = $state<{
+	type LastPush = {
 		repo: string;
 		message: string;
 		url: string;
 		pushedAt: string;
 		commitCount: number;
 		sha?: string;
-	} | null>(null);
+	};
+
+	const LAST_PUSH_CACHE_KEY = 'svelfolio:last-push';
+	let lastPush = $state<LastPush | null>(null);
 
 	type LanyardResponse = {
 		success: boolean;
@@ -97,9 +100,19 @@
 			}>;
 		};
 	};
+	function restoreGitHubActivity() {
+		try {
+			const cached = localStorage.getItem(LAST_PUSH_CACHE_KEY);
+			if (!cached) return;
+			lastPush = JSON.parse(cached) as LastPush;
+		} catch {
+			localStorage.removeItem(LAST_PUSH_CACHE_KEY);
+		}
+	}
+
 	async function refreshGitHubActivity() {
 		try {
-			const response = await fetch('/api/github-activity', { cache: 'no-store' });
+			const response = await fetch('/api/github-activity');
 			if (!response.ok) throw new Error(`GitHub activity returned ${response.status}`);
 			const payload = (await response.json()) as {
 				repo?: string;
@@ -123,6 +136,7 @@
 				commitCount: payload.commitCount ?? 1,
 				sha: payload.sha
 			};
+			localStorage.setItem(LAST_PUSH_CACHE_KEY, JSON.stringify(lastPush));
 		} catch {
 			lastPush = null;
 		}
@@ -212,6 +226,7 @@
 		/*
 		 * Load immediately.
 		 */
+		restoreGitHubActivity();
 		void refreshListening();
 		void refreshGitHubActivity();
 
