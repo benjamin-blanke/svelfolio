@@ -183,6 +183,28 @@
 		return `${Math.floor(months / 12)}y ago`;
 	}
 
+	onMount(() => {
+		sudoMode = new URLSearchParams(window.location.search).has('sudo');
+		if (sudoMode) {
+			track('sudo_easter_egg', { route: '/' });
+			sudoStep = 1;
+			sudoTimer = window.setTimeout(() => (sudoStep = 2), 850);
+		}
+
+		restoreGitHubActivity();
+		void refreshListening();
+		void refreshGitHubActivity();
+
+		const listeningInterval = window.setInterval(() => void refreshListening(), 15_000);
+		const githubInterval = window.setInterval(() => void refreshGitHubActivity(), 60_000);
+
+		return () => {
+			if (sudoTimer) window.clearTimeout(sudoTimer);
+			window.clearInterval(listeningInterval);
+			window.clearInterval(githubInterval);
+		};
+	});
+
 	/* ───────────────────────────────────────────── */
 
 	let sectionEl = $state<HTMLElement | null>(null);
