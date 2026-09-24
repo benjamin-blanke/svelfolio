@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
+	import { PUBLIC_DISCORD_USER_ID } from '$env/static/public';
 	import { createWebHaptics } from 'web-haptics/svelte';
 	import Metadata from '$lib/components/metadata.svelte';
 	import { track } from '$lib/analytics';
@@ -67,7 +68,7 @@
 	let loading = $state(false);
 
 	/* ─────────────────────────────────────────────
-	   Spotify / GitHub activity
+	   Lanyard / GitHub activity
 	───────────────────────────────────────────── */
 
 	let listeningTo = $state<{ title: string; artist: string; url?: string } | null>(null);
@@ -80,22 +81,36 @@
 		sha?: string;
 	} | null>(null);
 
-	async function refreshSpotify() {
+	type LanyardResponse = {
+		success: boolean;
+		data?: {
+			listening_to_spotify?: boolean;
+			spotify?: { song?: string } | null;
+			activities?: Array<{ name?: string; type?: number; details?: string; state?: string }>;
+		};
+	};
+
+	async function refreshListening() {
+		if (!PUBLIC_DISCORD_USER_ID) {
+			listeningTo = null;
+			return;
+		}
 		try {
-			const response = await fetch('/api/spotify', { cache: 'no-store' });
-			if (!response.ok) {
+			const response = await fetch(`https://api.lanyard.rest/v1/users/${PUBLIC_DISCORD_USER_ID}`, { cache: 'no-store' });
+			if (!response.ok) throw new Error(`Lanyard returned ${response.status}`);
+			const payload = (await response.json()) as LanyardResponse;
+			const data = payload.data;
+			if (!payload.success || !data) {
 				listeningTo = null;
 				return;
 			}
-			const payload = (await response.json()) as {
-				isPlaying?: boolean;
-				title?: string;
-				artist?: string;
-				url?: string;
-			};
-			listeningTo = payload.isPlaying && payload.title && payload.artist
-				? { title: payload.title, artist: payload.artist, url: payload.url }
-				: null;
+			if (data.listening_to_spotify && data.spotify?.song) {
+				listeningTo = { title: data.spotify.song, artist: 'Spotify' };
+				return;
+			}
+			const activity = data.activities?.find((item) => item.type === 2);
+			const title = activity?.details || activity?.state || activity?.name;
+			listeningTo = title ? { title, artist: activity?.name ?? 'Discord' } : null;
 		} catch {
 			listeningTo = null;
 		}
