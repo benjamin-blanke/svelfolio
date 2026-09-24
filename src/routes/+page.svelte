@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-		import { PUBLIC_DISCORD_USER_ID } from '$env/static/public';
 	import { createWebHaptics } from 'web-haptics/svelte';
 	import Metadata from '$lib/components/metadata.svelte';
 	import { track } from '$lib/analytics';
@@ -68,10 +67,40 @@
 	let loading = $state(false);
 
 	/* ─────────────────────────────────────────────
-	   Lanyard / Discord Presence
+	   Spotify / GitHub activity
 	───────────────────────────────────────────── */
 
-	let listeningTo = $state<string | null>(null);
+	let listeningTo = $state<{ title: string; artist: string; url?: string } | null>(null);
+	let lastPush = $state<{
+		repo: string;
+		message: string;
+		url: string;
+		pushedAt: string;
+		commitCount: number;
+		sha?: string;
+	} | null>(null);
+
+	async function refreshSpotify() {
+		try {
+			const response = await fetch('/api/spotify', { cache: 'no-store' });
+			if (!response.ok) {
+				listeningTo = null;
+				return;
+			}
+			const payload = (await response.json()) as {
+				isPlaying?: boolean;
+				title?: string;
+				artist?: string;
+				url?: string;
+			};
+			listeningTo = payload.isPlaying && payload.title && payload.artist
+				? { title: payload.title, artist: payload.artist, url: payload.url }
+				: null;
+		} catch {
+			listeningTo = null;
+		}
+	}
+
 	type LastPush = {
 		repo: string;
 		message: string;
@@ -82,24 +111,7 @@
 	};
 
 	const LAST_PUSH_CACHE_KEY = 'svelfolio:last-push';
-	let lastPush = $state<LastPush | null>(null);
 
-	type LanyardResponse = {
-		success: boolean;
-		data?: {
-			listening_to_spotify?: boolean;
-			spotify?: {
-				song?: string;
-			} | null;
-
-			activities?: Array<{
-				name?: string;
-				type?: number;
-				details?: string;
-				state?: string;
-			}>;
-		};
-	};
 	function restoreGitHubActivity() {
 		try {
 			const cached = localStorage.getItem(LAST_PUSH_CACHE_KEY);
@@ -155,100 +167,6 @@
 		if (months < 12) return `${months}mo ago`;
 		return `${Math.floor(months / 12)}y ago`;
 	}
-
-	async function refreshListening() {
-		if (!PUBLIC_DISCORD_USER_ID) {
-			listeningTo = null;
-			return;
-		}
-
-		try {
-			const response = await fetch(
-				`https://api.lanyard.rest/v1/users/${PUBLIC_DISCORD_USER_ID}`,
-				{
-					cache: 'no-store'
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error(`Lanyard returned ${response.status}`);
-			}
-
-			const payload = (await response.json()) as LanyardResponse;
-			const data = payload.data;
-
-			if (!payload.success || !data) {
-				listeningTo = null;
-				return;
-			}
-
-			/*
-			 * Spotify has its own convenient Lanyard object.
-			 */
-			if (data.listening_to_spotify && data.spotify?.song) {
-				listeningTo = data.spotify.song;
-				return;
-			}
-
-			/*
-			 * Discord activity type 2 = Listening.
-			 *
-			 * This allows the display to also work with other
-			 * listening activities Discord exposes.
-			 */
-			const activity = data.activities?.find(
-				(item) => item.type === 2
-			);
-
-			listeningTo =
-				activity?.details ||
-				activity?.state ||
-				activity?.name ||
-				null;
-		} catch {
-			/*
-			 * Presence is completely optional.
-			 * If Lanyard is unreachable, simply hide the element.
-			 */
-			listeningTo = null;
-		}
-	}
-
-	onMount(() => {
-		// Query parameters are client-only here because the homepage is prerendered.
-		sudoMode = new URLSearchParams(window.location.search).has('sudo');
-		if (sudoMode) {
-			track('sudo_easter_egg', { route: '/' });
-			sudoStep = 1;
-			sudoTimer = window.setTimeout(() => (sudoStep = 2), 850);
-		}
-
-		/*
-		 * Load immediately.
-		 */
-		restoreGitHubActivity();
-		void refreshListening();
-		void refreshGitHubActivity();
-
-		/*
-		 * Refresh every 15 seconds so the currently playing
-		 * track updates without reloading the portfolio.
-		 */
-		const interval = window.setInterval(
-			() => void refreshListening(),
-			15_000
-		);
-		const githubInterval = window.setInterval(
-			() => void refreshGitHubActivity(),
-			60_000
-		);
-
-		return () => {
-			if (sudoTimer) window.clearTimeout(sudoTimer);
-			window.clearInterval(interval);
-			window.clearInterval(githubInterval);
-		};
-	});
 
 	/* ───────────────────────────────────────────── */
 
@@ -447,11 +365,11 @@
 
 	<div class="mt-1 flex w-full max-w-md flex-col items-center gap-2 text-sm text-neutral-400">
 		{#if listeningTo}
-			<div class="flex max-w-full items-center justify-center gap-2" title={`Listening to ${listeningTo}`}>
+			<div class="flex max-w-full items-center justify-center gap-2" title={`Listening to ${listeningTo.title} by ${listeningTo.artist}`}>
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
 					<path d="M9 18V5l11-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="17" cy="16" r="3" />
 				</svg>
-				<span class="truncate">Listening to {listeningTo}</span>
+				<span class="truncate">Listening to {listeningTo.title} · {listeningTo.artist}</span>
 			</div>
 		{/if}
 
