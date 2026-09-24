@@ -38,7 +38,7 @@
 
 <NavbarListener />
 
-<nav class="overflow-x-auto overscroll-x-contain text-sm select-none md:text-base lg:px-4 lg:pt-2 lg:pb-2.5">
+<nav class="w-full overflow-x-auto overscroll-x-contain text-sm select-none md:text-base lg:px-4 lg:pt-2 lg:pb-2.5">
 	<div class="hidden items-center justify-between gap-2 px-2 lg:flex lg:px-0">
 		<a onclick={() => track('github_profile_open', { source: 'navbar_branch' })} class="flex items-center gap-0.5" href="https://github.com/benjamin-blanke" target="_blank" rel="norreferrer">
 			<svg
@@ -62,8 +62,8 @@
 		</a>
 		<p>-- VIEW --</p>
 	</div>
-	<div class="flex min-w-max items-center justify-between gap-6 px-2 py-3 leading-none lg:min-w-0 lg:gap-20 lg:px-0 lg:py-0">
-		<ul class="flex items-center pr-2">
+	<div class="w-max min-w-full py-3 leading-none lg:flex lg:w-auto lg:min-w-0 lg:items-center lg:justify-between lg:gap-20 lg:px-0 lg:py-0">
+		<ul class="flex w-max items-center px-2 pr-6 lg:px-0 lg:pr-2">
 			{#each navbarMenu as { title, href, key } (href)}
 				{@const parts = getHighlightedParts(title, key)}
 				{@const isOnCurrentPath = isActive(href, currentPath)}
