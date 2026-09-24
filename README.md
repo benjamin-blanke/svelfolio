@@ -11,7 +11,6 @@ Personal portfolio of **Benjamin Blanke**, built with SvelteKit and deployed on 
 - GitHub repository metadata and latest push activity
 - Discord / Spotify listening activity through Lanyard
 - Guest book with GitHub OAuth, replies and reactions
-- Hire Me contact form with Resend confirmation emails
 - Command palette with `⌘K` / `Ctrl+K`
 - Umami analytics
 - Interactive FIGlet homepage
@@ -24,7 +23,6 @@ Personal portfolio of **Benjamin Blanke**, built with SvelteKit and deployed on 
 - Tailwind CSS
 - PostgreSQL + Drizzle ORM
 - GitHub API / OAuth
-- Resend
 - Umami
 - Vercel
 
@@ -58,8 +56,6 @@ GITHUB_CLIENT_SECRET=
 GITHUB_TOKEN=
 
 PUBLIC_DISCORD_USER_ID=
-
-RESEND_API_KEY=
 ```
 
 `PUBLIC_DISCORD_USER_ID` is used by Lanyard to show current listening activity.
@@ -67,18 +63,6 @@ RESEND_API_KEY=
 ## Listening activity
 
 The homepage uses Lanyard with `PUBLIC_DISCORD_USER_ID` to display Spotify or other Discord listening activity. No Spotify developer credentials are required.
-
-## Hire Me
-
-The contact form lives at `/hire`.
-
-Resend sends confirmation mail as:
-
-```text
-Benjamin Blanke <business@blanke.lol>
-```
-
-Incoming inquiries are delivered to the private inbox configured in the server route. `blanke.lol` must be verified as a sending domain in Resend.
 
 ## Guest book
 
@@ -113,7 +97,6 @@ The production site is deployed through Vercel from the `main` branch. Configure
 ## Privacy & security
 
 - OAuth and API secrets stay in private server environment variables.
-- The Hire Me form includes server-side validation and a honeypot.
 - Analytics are handled by the self-hosted Umami instance.
 - Do not commit `.env` files or credentials.
 
